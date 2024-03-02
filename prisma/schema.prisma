@@ -6,13 +6,116 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
 model Seller {
-  id    Int     @id @default(autoincrement())
-  name  String
-  email String
+  id            String    @id @default(uuid())
+  firstName     String
+  lastName      String
+  email         String    @unique
+  businessName  String
+  password      String    @unique
+  userName      String    @unique
+  contactNumber String    @unique
+  emailVerified Boolean
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  products      Product[]
+  orders        Order[]
+}
+
+model Product {
+  id          String    @id @default(uuid())
+  productCode String    @unique
+  name        String
+  description String
+  price       Float
+  sellerId    String
+  seller      Seller    @relation(fields: [sellerId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  order       Order[]
+  orderLink   OrderLink @relation(fields: [orderLinkId], references: [id])
+  orderLinkId String
+}
+
+model Order {
+  id              String   @id @default(uuid())
+  productId       String
+  product         Product  @relation(fields: [productId], references: [id])
+  quantity        Int
+  deliveryAddress String
+  dateAndTime     DateTime
+  paymentMethod   String
+  orderStatus     String
+  customerId      String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  seller          Seller   @relation(fields: [sellerId], references: [id])
+  sellerId        String
+  customer        Customer @relation(fields: [customerId], references: [id])
+}
+
+model Customer {
+  id            String   @id @default(uuid())
+  firstName     String
+  lastName      String
+  email         String   @unique
+  contactNumber String   @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  orders        Order[]
+}
+
+model OrderLink {
+  id             String       @id @default(uuid())
+  name           String
+  products       Product[]
+  link           String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  questions      QuestionList @relation(fields: [questionListId], references: [id])
+  questionListId String
+  Question       Question[]
+}
+
+model QuestionList {
+  id        String      @id @default(uuid())
+  questions Question[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  OrderLink OrderLink[]
+}
+
+model Question {
+  id              String        @id @default(uuid())
+  question        String
+  type            QuestionType
+  //selectOptions   SelectOptions @relation(fields: [selectOptionsId], references: [id])
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  orderLinkId     String
+  orderLink       OrderLink     @relation(fields: [orderLinkId], references: [id])
+  QuestionList    QuestionList? @relation(fields: [questionListId], references: [id])
+  questionListId  String?
+  selectOptionsId String
+}
+
+// model SelectOptions {
+//   id        String     @id @default(uuid())
+//   options   String[]
+//   createdAt DateTime   @default(now())
+//   updatedAt DateTime   @updatedAt
+//   Question  Question[]
+// }
+
+enum QuestionType {
+  TEXT
+  RADIO
+  CHECKBOX
+  SELECT
+  TEXTAREA
 }

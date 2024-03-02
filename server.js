@@ -1,9 +1,12 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 
 const sellerRoutes = require("./src/routes/seller.routes");
 
 app.use(express.json());
+
+app.use(cors());
 
 app.use(sellerRoutes);
 
