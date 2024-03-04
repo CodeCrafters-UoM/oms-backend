@@ -9,7 +9,12 @@ async function getAllSellers() {
   return prisma.seller.findMany();
 }
 
+async function getItemComponent() {
+  return prisma.itemComponent.findMany();
+}
+
 module.exports = {
   getAllSellers,
   createSeller,
+  getItemComponent,
 };

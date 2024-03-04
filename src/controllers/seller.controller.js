@@ -13,4 +13,5 @@ async function getAllSellers(req, res) {
 module.exports = {
   getAllSellers,
   createSeller,
+
 };
