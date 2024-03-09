@@ -1,12 +1,22 @@
 const express = require("express");
-const app = express();
+
 const cors = require("cors");
 
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 const sellerRoutes = require("./src/routes/seller.routes");
 
-app.use(express.json());
+const app = express();
+app.use(express.json()); //converts incoming request data to JSON
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
+app.use(cookieParser());
 
 app.use(sellerRoutes);
 
