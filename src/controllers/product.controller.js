@@ -5,6 +5,12 @@ async function getAllProducts(req, res) {
   res.json(products);
 }
 
+async function createProduct(req, res) {
+  const product = await sellerService.createProduct(req.body);
+  res.json(product).status(201);
+}
+
 module.exports = {
   getAllProducts,
+  createProduct,
 };
