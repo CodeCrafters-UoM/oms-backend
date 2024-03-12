@@ -5,5 +5,8 @@ const productController = require("../controllers/product.controller");
 router.post("/product/get", productController.createProduct);
 router.get("/products", productController.getAllProducts);
 
+// Add route for deleting a product by Product Code
+router.delete("/product/:productCode", productController.deleteProduct);
+
 
 module.exports = router;

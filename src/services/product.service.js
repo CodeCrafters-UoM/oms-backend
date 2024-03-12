@@ -9,7 +9,16 @@ async function createProduct(data) {
   return prisma.product.create({ data });
 }
 
+async function deleteProduct(productCode) {
+  return prisma.product.delete({
+    where: {
+      id: parseInt(productCode)
+    }
+  });
+}
+
 module.exports = {
   getAllProducts,
   createProduct,
+  deleteProduct,
 };

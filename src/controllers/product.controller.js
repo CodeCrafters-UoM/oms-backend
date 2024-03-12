@@ -10,7 +10,19 @@ async function createProduct(req, res) {
   res.json(product).status(201);
 }
 
+async function deleteProduct(req, res) {
+  try {
+    const { productCode } = req.params;
+    await productService.deleteProduct(productCode);
+    res.status(200).json({ success: true, message: "Product deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+}
+
+
 module.exports = {
   getAllProducts,
   createProduct,
+  deleteProduct,
 };
