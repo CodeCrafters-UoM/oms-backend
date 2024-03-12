@@ -20,9 +20,25 @@ async function deleteProduct(req, res) {
   }
 }
 
+async function updateProduct(req, res) {
+  try {
+    const { productCode } = req.params;
+    const newData = req.body;
+    const result = await productService.updateProduct(productCode, newData);
+    if (result.success) {
+      res.status(200).json({ success: true, message: "Product updated successfully" });
+    } else {
+      res.status(404).json({ success: false, error: result.error });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+}
+
 
 module.exports = {
   getAllProducts,
   createProduct,
   deleteProduct,
+  updateProduct,
 };

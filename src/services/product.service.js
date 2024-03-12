@@ -10,14 +10,6 @@ async function createProduct(data) {
   return prisma.product.create({ data });
 }
 
-// async function deleteProduct(productCode) {
-//   return prisma.product.delete({
-//     where: {
-//       id: parseInt(productCode)
-//     }
-//   });
-// }
-
 async function deleteProduct(productCode) {
   // Find the product based on the productCode
   const product = await prisma.product.findUnique({
@@ -44,9 +36,37 @@ async function deleteProduct(productCode) {
   }
 }
 
+async function updateProduct(productCode, newData) {
+  // Find the product based on the productCode
+  const product = await prisma.product.findUnique({
+    where: {
+      productCode: productCode,
+    },
+  });
+
+  if (!product) {
+    // Product not found
+    return { success: false, error: 'Product not found' };
+  }
+
+  // Update the product with new data
+  try {
+    await prisma.product.update({
+      where: {
+        id: product.id,
+      },
+      data: newData,
+    });
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
 
 module.exports = {
   getAllProducts,
   createProduct,
   deleteProduct,
+  updateProduct,
 };
