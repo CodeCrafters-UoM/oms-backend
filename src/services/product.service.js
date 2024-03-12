@@ -6,6 +6,7 @@ async function getAllProducts() {
 }
 
 async function createProduct(data) {
+  console.log(data);
   return prisma.product.create({ data });
 }
 

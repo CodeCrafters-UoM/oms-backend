@@ -6,8 +6,8 @@ async function getAllProducts(req, res) {
 }
 
 async function createProduct(req, res) {
-  const product = await sellerService.createProduct(req.body);
-  res.json(product).status(201);
+  const product = await productService.createProduct(req.body);
+  res.json(product).status(200);
 }
 
 async function deleteProduct(req, res) {
