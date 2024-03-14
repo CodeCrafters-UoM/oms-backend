@@ -14,11 +14,11 @@ datasource db {
 model Seller {
   id            String    @id @default(uuid())
   name          String
-  email         String    @unique
+  email         String //@unique
   businessName  String
-  password      String    @unique
+  password      String //@unique
   userName      String    @unique
-  contactNumber String    @unique
+  contactNumber String //@unique
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   products      Product[]
@@ -26,15 +26,15 @@ model Seller {
 }
 
 model Product {
-  id          String    @id @default(uuid())
-  productCode String    @unique
+  id          String   @id @default(uuid())
+  productCode String   @unique
   name        String
   description String
   price       Float
   sellerId    String
-  seller      Seller    @relation(fields: [sellerId], references: [id])
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  seller      Seller   @relation(fields: [sellerId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   order       Order[]
 }
 
