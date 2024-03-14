@@ -3,18 +3,25 @@ const prisma = new PrismaClient();
 
 async function createSeller(data) {
   try {
-    console.log(data);
+    const existingSeller = await prisma.seller.findUnique({
+      where: {
+        username: data.username,
+      },
+    });
+
+    if (existingSeller) {
+      throw new Error("Username already exists");
+    }
     const newSeller = await prisma.seller.create({ data });
     return newSeller;
   } catch (error) {
-    console.error("Error creating seller:", error);
-    throw error; // Rethrow the error to handle it where this function is called
+    console.log("Error creating seller:", error);
+    throw error;
   }
 }
-
-// async function getAllSellers() {
-//   return prisma.seller.findMany();
-// }
+async function getAllSellers() {
+  return prisma.seller.findMany();
+}
 
 const bcrypt = require("bcrypt");
 
@@ -46,7 +53,7 @@ async function login(user) {
 }
 
 module.exports = {
-  // getAllSellers,
+  getAllSellers,
   createSeller,
   login,
 };
