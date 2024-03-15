@@ -8,7 +8,7 @@ async function createSeller(data) {
         username: data.username,
       },
     });
-
+    console.log(existingSeller);
     if (existingSeller) {
       throw new Error("Username already exists");
     }
@@ -29,7 +29,7 @@ async function login(user) {
   try {
     const seller = await prisma.seller.findUnique({
       where: {
-        username: user.username,
+        username: user.userName,
       },
     });
 
