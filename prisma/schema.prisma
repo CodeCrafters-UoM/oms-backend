@@ -67,13 +67,13 @@ model Customer {
 }
 
 model OrderLink {
-  id             String       @id @default(uuid())
+  id             String        @id @default(uuid())
   name           String
   link           String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  questions      QuestionList @relation(fields: [questionListId], references: [id])
-  questionListId String
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  questions      QuestionList? @relation(fields: [questionListId], references: [id])
+  questionListId String?
   Question       Question[]
 }
 
