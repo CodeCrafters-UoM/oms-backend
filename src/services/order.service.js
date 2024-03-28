@@ -1,4 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
+const { request } = require("http");
 const prisma = new PrismaClient();
 
 async function getAllOrders() {
@@ -38,33 +39,17 @@ async function getAllOrders() {
 }
 
 // this is additional
-const createOrders = async () => {
+const createOrders = async (id,status) => {
+  
   return await prisma.order.update({
     where: {
-      orderId: 1,
+      orderId: id,
     },
     data: {
-      orderStatus: "success" ,
+      orderStatus: status ,
     },
   });
 }
-
-
-// async function createOrders(orderStatus) {
-//   try {
-//     const newData = await prisma.data.create({
-//       data: {
-//         orderStatus,
-//       },
-//     });
-//     return { success: true, data: newData };
-//   } catch (error) {
-//     return { success: false, error: 'Error storing data' };
-//   }
-// }
-
-
-
 
 module.exports = {
   getAllOrders,
