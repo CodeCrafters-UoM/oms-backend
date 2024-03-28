@@ -18,9 +18,10 @@ async function createSeller(req, res) {
     // create a token
     const token = createToken(seller.id);
     console.log(token);
-
-    res.status(200).json({ userName, token });
+    userid = seller.id;
+    res.status(200).json({ userid, token });
   } catch (error) {
+    console.log(error);
     if (error.message === "Username already exists") {
       res.status(400).json({ error: "Username already exists" });
     } else {
@@ -41,7 +42,7 @@ async function login(req, res) {
     res.status(200).json(formattedUser);
   } catch (err) {
     res.status(401).json({ error: err.message });
-    console.error(err);
+    console.log(err);
   }
 }
 
@@ -53,28 +54,9 @@ async function getAllSellers(req, res) {
     res.status(500).json({ error: "Internal server error" });
   }
 }
-// async function getToken(req, res) {
-//   const refreshToken = req.body.refreshToken;
-//   if (refreshToken === null) return res.sendStatus(401);
-//   if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
-//   jwt.verify(refreshToken, process.env.RE_TOKEN_KEY, (err, user) => {
-//     if (err) return res.sendStatus(403);
-//     const accessToken = jwt.sign({ name: user.name }, process.env.TOKEN_KEY, {
-//       expiresIn: "10s",
-//     });
-//     res.send({ accessToken });
-//   });
-// }
-// async function logout(req, res) {
-//   const refreshToken = req.body.refreshToken;
-//   refreshTokens = refreshTokens.filter((t) => t !== refreshToken);
-//   res.sendStatus(204);
-// }
 
 module.exports = {
   getAllSellers,
   createSeller,
   login,
-  // getToken,
-  // logout,
 };
