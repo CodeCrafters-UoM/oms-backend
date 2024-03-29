@@ -4,7 +4,7 @@ const cors = require("cors");
 
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
-const sellerRoutes = require("./src/routes/seller.routes");
+const userRoutes = require("./src/routes/user.routes");
 
 const app = express();
 app.use(express.json()); //converts incoming request data to JSON
@@ -18,7 +18,7 @@ app.use(
 );
 app.use(cookieParser());
 
-app.use(sellerRoutes);
+app.use("/api/v1", userRoutes);
 
 app.listen(8000, () => {
   console.log("Server is running on port", 8000);
