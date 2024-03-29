@@ -11,11 +11,6 @@ datasource db {
   relationMode = "prisma"
 }
 
-enum Role {
-  ADMIN
-  SELLER
-}
-
 model User {
   id        String   @id @default(uuid())
   name      String
@@ -51,8 +46,8 @@ model Seller {
 }
 
 model Product {
-  id          String    @id @default(uuid())
-  productCode String    @unique
+  id          String   @id @default(uuid())
+  productCode String   @unique
   name        String
   description String
   price       Float
@@ -61,15 +56,15 @@ model Product {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   order       Order[]
-  orderLink   OrderLink @relation(fields: [orderLinkId], references: [id])
-  orderLinkId String
+  orderLink   OrderLink? @relation(fields: [orderLinkId], references: [id])
+  orderLinkId String?
 
   @@index([sellerId])
   @@index([orderLinkId])
 }
 
 model Order {
-  id              String   @id @default(uuid())
+  orderId         Int      @id @default(autoincrement())
   productId       String
   product         Product  @relation(fields: [productId], references: [id])
   quantity        Int
@@ -83,10 +78,11 @@ model Order {
   seller          Seller   @relation(fields: [sellerId], references: [userId])
   sellerId        String
   customer        Customer @relation(fields: [customerId], references: [id])
-
+  description     String
   @@index([productId])
   @@index([sellerId])
   @@index([customerId])
+ 
 }
 
 model Customer {
@@ -103,7 +99,6 @@ model Customer {
 model OrderLink {
   id             String       @id @default(uuid())
   name           String
-  products       Product[]
   link           String
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
@@ -153,4 +148,9 @@ enum QuestionType {
   CHECKBOX
   SELECT
   TEXTAREA
+}
+
+enum Role {
+  ADMIN
+  SELLER
 }
