@@ -23,7 +23,7 @@ app.use(express.json());
 
 app.use(cors());
 
-app.use(sellerRoutes);
+// app.use(sellerRoutes);
 app.use(productRoutes);
 app.use(orderRoutes);
 app.listen(8000, () => {

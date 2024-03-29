@@ -9,5 +9,4 @@
 // router.post("/login", sellerController.login);
 // // router.delete("/logout", sellerController.logout);
 
-
-module.exports = router;
+// module.exports = router;
