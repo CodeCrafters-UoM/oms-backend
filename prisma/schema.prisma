@@ -11,18 +11,38 @@ datasource db {
   relationMode = "prisma"
 }
 
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  username  String   @unique
+  image     String?
+  role      Role     @default(SELLER)
+  password  String
+  admin     Admin?
+  seller    Seller?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([username, email])
+}
+
+model Admin {
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Seller {
-  id            String    @id @default(uuid())
-  name          String
-  email         String //@unique
+  user          User      @relation(fields: [userId], references: [id])
+  userId        String    @unique
   businessName  String
-  password      String //@unique
-  userName      String    @unique
   contactNumber String //@unique
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
   products      Product[]
   orders        Order[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 model Product {
@@ -31,11 +51,16 @@ model Product {
   name        String
   description String
   price       Float
+  seller      Seller    @relation(fields: [sellerId], references: [userId])
   sellerId    String
-  seller      Seller   @relation(fields: [sellerId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   order       Order[]
+  orderLink   OrderLink? @relation(fields: [orderLinkId], references: [id])
+  orderLinkId String?
+
+  @@index([sellerId])
+  @@index([orderLinkId])
 }
 
 model Order {
@@ -50,10 +75,14 @@ model Order {
   customerId      String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  seller          Seller   @relation(fields: [sellerId], references: [id])
+  seller          Seller   @relation(fields: [sellerId], references: [userId])
   sellerId        String
   customer        Customer @relation(fields: [customerId], references: [id])
   description     String
+  @@index([productId])
+  @@index([sellerId])
+  @@index([customerId])
+ 
 }
 
 model Customer {
@@ -76,6 +105,8 @@ model OrderLink {
   questions      QuestionList @relation(fields: [questionListId], references: [id])
   questionListId String
   Question       Question[]
+
+  @@index([questionListId])
 }
 
 model QuestionList {
@@ -98,6 +129,9 @@ model Question {
   QuestionList    QuestionList? @relation(fields: [questionListId], references: [id])
   questionListId  String?
   selectOptionsId String
+
+  @@index([orderLinkId])
+  @@index([questionListId])
 }
 
 // model SelectOptions {
@@ -114,4 +148,9 @@ enum QuestionType {
   CHECKBOX
   SELECT
   TEXTAREA
+}
+
+enum Role {
+  ADMIN
+  SELLER
 }
