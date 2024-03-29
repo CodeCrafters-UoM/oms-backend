@@ -39,7 +39,7 @@ model Product {
 }
 
 model Order {
-  id              String   @id @default(uuid())
+  orderId         Int      @id @default(autoincrement())
   productId       String
   product         Product  @relation(fields: [productId], references: [id])
   quantity        Int
@@ -53,6 +53,7 @@ model Order {
   seller          Seller   @relation(fields: [sellerId], references: [id])
   sellerId        String
   customer        Customer @relation(fields: [customerId], references: [id])
+  description     String
 }
 
 model Customer {
