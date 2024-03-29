@@ -1,4 +1,4 @@
-const { PrismaClient, Role } = require("@prisma/client");
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const jwt = require("jsonwebtoken");
 
@@ -7,7 +7,6 @@ function check(roles = []) {
     if (typeof roles === "string") {
       roles = [roles];
     }
-
     let token;
     if (
       req.headers.authorization &&
@@ -20,7 +19,6 @@ function check(roles = []) {
     if (!token) {
       return next(res.status(401).json({ error: "Please Login Again" }));
     }
-
     try {
       const decoded = jwt.verify(token, process.env.TOKEN_KEY);
       const currentUser = await prisma.user.findUnique({
@@ -31,7 +29,6 @@ function check(roles = []) {
       if (!currentUser || (roles.length && !roles.includes(currentUser.role))) {
         return next(res.status(401).json({ error: "User is not authorized" }));
       }
-
       req.user = currentUser;
       res.locals.user = currentUser;
       next();

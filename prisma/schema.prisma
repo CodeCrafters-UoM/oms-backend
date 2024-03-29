@@ -28,6 +28,8 @@ model User {
   seller    Seller?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([username, email])
 }
 
 model Admin {
