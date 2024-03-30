@@ -115,3 +115,10 @@ enum QuestionType {
   SELECT
   TEXTAREA
 }
+// enum OrderStatus{
+//   NEW 
+//   ACCEPT 
+//   REJECT
+//   DELIVERED
+//   RETURN
+// }
