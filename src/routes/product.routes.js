@@ -1,15 +1,20 @@
 const express = require("express");
 const router = express.Router();
 const productController = require("../controllers/product.controller");
+const auth = require("../middlewares/auth");
+const { Role } = require("@prisma/client");
 
-router.post("/product/addProduct", productController.createProduct);
-router.get("/products", productController.getAllProducts);
-
-// Add route for deleting a product by Product Code
-router.delete("/product/:productCode", productController.deleteProduct);
-
-// PUT route to update an existing product
-router.put("/product/:productCode", productController.updateProduct);
+router.post("/product/addProduct", auth.protected.check([Role.SELLER, Role.ADMIN]), productController.createProduct);
+router.get("/products", auth.protected.check([Role.SELLER, Role.ADMIN]), productController.getAllProducts);
+router.delete("/product/:productCode", auth.protected.check([Role.SELLER, Role.ADMIN]), productController.deleteProduct);
+router.put("/product/:productCode", auth.protected.check([Role.SELLER, Role.ADMIN]), productController.updateProduct);
 
 
 module.exports = router;
+
+
+//router.get(
+    //   "/users",
+    //   auth.protected.check([Role.SELLER, Role.ADMIN]),
+    //   userController.getAllUsers
+    // );
