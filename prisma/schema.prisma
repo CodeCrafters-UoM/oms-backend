@@ -56,8 +56,8 @@ model Product {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   order       Order[]
-  OrderLink   OrderLink @relation(fields: [orderLinkId], references: [id])
-  orderLinkId String
+  OrderLink   OrderLink? @relation(fields: [orderLinkId], references: [id])
+  orderLinkId String?
 
   @@index([sellerId])
   @@index([orderLinkId])
