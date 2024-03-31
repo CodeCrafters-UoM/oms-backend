@@ -1,7 +1,8 @@
 const productService = require("../services/product.service");
 
 async function getAllProducts(req, res) {
-  const id = req.query.sellerId;
+  const id = req.user.id;
+  console.log(id );
   const products = await productService.getAllProducts(id);
   res.json(products);
 }
