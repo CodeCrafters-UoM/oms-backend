@@ -8,10 +8,8 @@ async function getAllOrders(req, res) {
 const createOrders = async (req, res) => {
   try {
     const {id,status} = req.body
-    console.log(id);
     const changeStatus =  orderService.createOrders(parseInt(id),status)
     res.status(200).json(changeStatus);
-    console.log (changeStatus);
   } catch (error) {
     res.status(500).json({ messageee: error.message });
   }
@@ -19,5 +17,5 @@ const createOrders = async (req, res) => {
 
 module.exports = {
     getAllOrders ,
-    createOrders
+    createOrders ,
   };
