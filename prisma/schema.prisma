@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -35,32 +32,33 @@ model Admin {
 }
 
 model Seller {
-  user          User      @relation(fields: [userId], references: [id])
-  userId        String    @unique
-  businessName  String
-  contactNumber String //@unique
-  products      Product[]
-  orders        Order[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  user              User               @relation(fields: [userId], references: [id])
+  userId            String             @unique
+  businessName      String
+  contactNumber     String //@unique
+  products          Product[]
+  orders            Order[]
+  productOrderLinks ProductOrderLink[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 }
 
 model Product {
-  id          String    @id @default(uuid())
-  productCode String    @unique
-  name        String
-  description String
-  price       Float
-  seller      Seller    @relation(fields: [sellerId], references: [userId])
-  sellerId    String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  order       Order[]
-  OrderLink   OrderLink? @relation(fields: [orderLinkId], references: [id])
-  orderLinkId String?
+  id                 String           @id @default(uuid())
+  productCode        String           @unique
+  name               String
+  description        String
+  price              Float
+  seller             Seller           @relation(fields: [sellerId], references: [userId])
+  sellerId           String
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  order              Order[]
+  productOrderLink   ProductOrderLink @relation(fields: [productOrderLinkId], references: [id])
+  productOrderLinkId String           @unique
 
   @@index([sellerId])
-  @@index([orderLinkId])
+  @@index([productOrderLinkId])
 }
 
 model Order {
@@ -96,59 +94,17 @@ model Customer {
   orders        Order[]
 }
 
-model OrderLink {
-  id             String       @id @default(uuid())
-  name           String
-  Product        Product[]
-  link           String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  questions      QuestionList @relation(fields: [questionListId], references: [id])
-  questionListId String
-  Question       Question[]
+model ProductOrderLink {
+  id        String   @id @default(uuid())
+  name      String
+  product   Product?
+  link      String
+  seller    Seller   @relation(fields: [sellerId], references: [userId])
+  sellerId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  @@index([questionListId])
-}
-
-model QuestionList {
-  id        String      @id @default(uuid())
-  questions Question[]
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  OrderLink OrderLink[]
-}
-
-model Question {
-  id              String        @id @default(uuid())
-  question        String
-  type            QuestionType
-  //selectOptions   SelectOptions @relation(fields: [selectOptionsId], references: [id])
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  orderLinkId     String
-  orderLink       OrderLink     @relation(fields: [orderLinkId], references: [id])
-  QuestionList    QuestionList? @relation(fields: [questionListId], references: [id])
-  questionListId  String?
-  selectOptionsId String
-
-  @@index([orderLinkId])
-  @@index([questionListId])
-}
-
-// model SelectOptions {
-//   id        String     @id @default(uuid())
-//   options   String[]
-//   createdAt DateTime   @default(now())
-//   updatedAt DateTime   @updatedAt
-//   Question  Question[]
-// }
-
-enum QuestionType {
-  TEXT
-  RADIO
-  CHECKBOX
-  SELECT
-  TEXTAREA
+  @@index([sellerId])
 }
 
 enum Role {
