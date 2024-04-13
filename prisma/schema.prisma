@@ -67,15 +67,18 @@ model Order {
   product         Product  @relation(fields: [productId], references: [id])
   quantity        Int
   deliveryAddress String
-  dateAndTime     DateTime
+  // dateAndTime     DateTime
   paymentMethod   String
   orderStatus     String
-  customerId      String
+  size            String?
+  color           String?
+  comments        String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   seller          Seller   @relation(fields: [sellerId], references: [userId])
   sellerId        String
   customer        Customer @relation(fields: [customerId], references: [id])
+  customerId      String
   description     String
 
   @@index([productId])

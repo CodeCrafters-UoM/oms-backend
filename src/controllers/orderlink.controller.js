@@ -6,6 +6,7 @@ async function getAllOrderlinks(req, res) {
 }
 
 async function createOrderlink(req, res) {
+  console.log(req.body);
   const newOrderLink = await orderlinkService.createOrderlink(req.body);
   res.json(newOrderLink).status(201);
 }
@@ -20,18 +21,8 @@ async function deleteOrderlink(req, res) {
     res.status(500).json({ success: false, error: error.message });
   }
 }
-async function copyOrderlink(req, res) {
-  try {
-    const { id } = req.params;
-    const copiedOrderLink = await orderlinkService.copyOrderlink(id);
-    res.json(copiedOrderLink.link).status(201);
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-}
 module.exports = {
   getAllOrderlinks,
   createOrderlink,
   deleteOrderlink,
-  copyOrderlink,
 };

@@ -1,10 +1,23 @@
 const express = require("express");
 const router = express.Router();
 const orderlinkController = require("../controllers/orderlink.controller");
+const auth = require("../middlewares/auth");
+const { Role } = require("@prisma/client");
 
-router.get("/orderlinks", orderlinkController.getAllOrderlinks);
-router.post("/orderlinks/createorderlink", orderlinkController.createOrderlink);
-router.delete("/orderlinks/delete/:id", orderlinkController.deleteOrderlink);
-router.get("/orderlinks/copy/:id", orderlinkController.copyOrderlink);
+router.get(
+  "/orderlinks",
+  auth.protected.check([Role.SELLER, Role.ADMIN]),
+  orderlinkController.getAllOrderlinks
+);
+router.post(
+  "/orderlinks/createorderlink",
+  auth.protected.check(Role.SELLER),
+  orderlinkController.createOrderlink
+);
+router.delete(
+  "/orderlinks/delete/:id",
+  auth.protected.check(Role.SELLER),
+  orderlinkController.deleteOrderlink
+);
 
 module.exports = router;
