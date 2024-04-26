@@ -10,6 +10,8 @@ async function getAllSellers(req, res) {
   res.json(sellers);
 }
 
+
+
 module.exports = {
   getAllSellers,
   createSeller,

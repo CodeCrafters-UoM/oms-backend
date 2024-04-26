@@ -39,7 +39,7 @@ model Product {
 }
 
 model Order {
-  id              String   @id @default(uuid())
+  orderId         Int      @id @default(autoincrement())
   productId       String
   product         Product  @relation(fields: [productId], references: [id])
   quantity        Int
@@ -47,6 +47,7 @@ model Order {
   dateAndTime     DateTime
   paymentMethod   String
   orderStatus     String
+  description     String
   customerId      String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
