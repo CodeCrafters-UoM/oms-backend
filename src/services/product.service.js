@@ -5,6 +5,12 @@ async function getAllProducts() {
   return prisma.product.findMany();
 }
 
+async function getProduct(productCode){
+  return prisma.product.findUnique({
+    where: {productCode: productCode},
+  });
+}
+
 async function createProduct(data) {
   console.log(data);
   return prisma.product.create({ data });
@@ -66,6 +72,7 @@ async function updateProduct(productCode, newData) {
 
 module.exports = {
   getAllProducts,
+  getProduct,
   createProduct,
   deleteProduct,
   updateProduct,

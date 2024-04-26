@@ -5,6 +5,13 @@ async function getAllProducts(req, res) {
   res.json(products);
 }
 
+async function getProduct(req, res) {
+  const { productCode } = req.params;
+  console.log(productCode);
+  const product = await productService.getProduct(productCode);
+  res.json(product);
+}
+
 async function createProduct(req, res) {
   const product = await productService.createProduct(req.body);
   res.json(product).status(200);
@@ -24,6 +31,7 @@ async function updateProduct(req, res) {
   try {
     const { productCode } = req.params;
     const newData = req.body;
+    console.log(productCode, newData);
     const result = await productService.updateProduct(productCode, newData);
     if (result.success) {
       res.status(200).json({ success: true, message: "Product updated successfully" });
@@ -38,6 +46,7 @@ async function updateProduct(req, res) {
 
 module.exports = {
   getAllProducts,
+  getProduct,
   createProduct,
   deleteProduct,
   updateProduct,

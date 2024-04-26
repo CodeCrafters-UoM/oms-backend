@@ -10,6 +10,6 @@ async function getAllSellers() {
 }
 
 module.exports = {
-  getAllSellers,
+  getAllSellers, 
   createSeller,
 };
