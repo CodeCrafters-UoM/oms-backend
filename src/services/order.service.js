@@ -4,8 +4,11 @@ const prisma = new PrismaClient();
 
 async function getAllOrders() {
   const ordersWithCustomer = await prisma.order.findMany(
-    {
-    include: {
+   {
+    where: {
+      sellerId: '1a37cefe-eebc-4761-9226-846c11c696de', 
+    },
+    include: {    
       customer: {
         select: {
           firstName: true,
@@ -23,24 +26,20 @@ async function getAllOrders() {
        },
      },
     });
-
-  // Transforming the data to include the customerName
   const orders = ordersWithCustomer.map(order => ({
     ...order,
     customerName: `${order.customer.firstName} ${order.customer.lastName}`,
-    contactNumber: `${order.customer.contactNumber}`,
-    allOrder: `${order.customer.orders}`,
-    productCode: `${order.product.productCode}`,
-    unitPrice: `${order.product.price}`,
-    // productDescription: `${order.product.description}`,   
-  }));
-
+    contactNumber: order.customer.contactNumber,
+    allOrder: order.customer.orders,
+    productCode: order.product.productCode,
+    unitPrice: order.product.price,   
+  })); 
+  
   return orders;
 }
 
-// this is additional
+// set the order status
 const createOrders = async (id,status) => {
-  
   return await prisma.order.update({
     where: {
       orderId: id,
@@ -53,5 +52,5 @@ const createOrders = async (id,status) => {
 
 module.exports = {
   getAllOrders,
-  createOrders
+  createOrders,
 };
