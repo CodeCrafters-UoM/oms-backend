@@ -1,18 +1,113 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("LOCAL_DATABASE_URL")
   relationMode = "prisma"
 }
 
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  username  String   @unique
+  image     String?
+  role      Role     @default(SELLER)
+  password  String
+  admin     Admin?
+  seller    Seller?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([username, email])
+}
+
+model Admin {
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Seller {
-  id    Int     @id @default(autoincrement())
-  name  String
-  email String
+  user              User               @relation(fields: [userId], references: [id])
+  userId            String             @unique
+  businessName      String
+  contactNumber     String //@unique
+  products          Product[]
+  orders            Order[]
+  productOrderLinks ProductOrderLink[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
+model Product {
+  id                 String           @id @default(uuid())
+  productCode        String           @unique
+  name               String
+  description        String
+  price              Float
+  seller             Seller           @relation(fields: [sellerId], references: [userId])
+  sellerId           String
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  order              Order[]
+  productOrderLink   ProductOrderLink @relation(fields: [productOrderLinkId], references: [id])
+  productOrderLinkId String           @unique
+
+  @@index([sellerId])
+  @@index([productOrderLinkId])
+}
+
+model Order {
+  orderId         Int      @id @default(autoincrement())
+  productId       String
+  product         Product  @relation(fields: [productId], references: [id])
+  quantity        Int
+  deliveryAddress String
+  dateAndTime     DateTime
+  paymentMethod   String
+  orderStatus     String
+  customerId      String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  seller          Seller   @relation(fields: [sellerId], references: [userId])
+  sellerId        String
+  customer        Customer @relation(fields: [customerId], references: [id])
+  description     String
+
+  @@index([productId])
+  @@index([sellerId])
+  @@index([customerId])
+}
+
+model Customer {
+  id            String   @id @default(uuid())
+  firstName     String
+  lastName      String
+  email         String   @unique
+  contactNumber String   @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  orders        Order[]
+}
+
+model ProductOrderLink {
+  id        String   @id @default(uuid())
+  name      String
+  product   Product?
+  link      String
+  seller    Seller   @relation(fields: [sellerId], references: [userId])
+  sellerId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sellerId])
+}
+
+enum Role {
+  ADMIN
+  SELLER
 }
