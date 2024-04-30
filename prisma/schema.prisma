@@ -65,11 +65,11 @@ model Order {
   orderId         Int      @id @default(autoincrement())
   productId       String
   product         Product  @relation(fields: [productId], references: [id])
-  quantity        Int
+  quantity        Int?
   deliveryAddress String
-  // dateAndTime     DateTime
-  paymentMethod   String
+  paymentMethod   String?
   orderStatus     String
+  deliveryMethod  String?
   size            String?
   color           String?
   comments        String?
@@ -79,7 +79,6 @@ model Order {
   sellerId        String
   customer        Customer @relation(fields: [customerId], references: [id])
   customerId      String
-  description     String
 
   @@index([productId])
   @@index([sellerId])
@@ -90,7 +89,7 @@ model Customer {
   id            String   @id @default(uuid())
   firstName     String
   lastName      String
-  email         String   @unique
+  email         String?  @unique
   contactNumber String   @unique
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
