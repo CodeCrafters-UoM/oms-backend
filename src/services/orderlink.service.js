@@ -2,21 +2,21 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function getAllOrderlinks() {
-  return prisma.orderLink.findMany();
+  return prisma.productOrderLink.findMany();
 }
 async function createOrderlink(data) {
   console.log(data);
-  return prisma.orderLink.create({ data });
+  return prisma.productOrderLink.create({ data });
 }
 async function deleteOrderlink(id) {
-  return prisma.orderLink.delete({
+  return prisma.productOrderLink.delete({
     where: {
       id: id,
     },
   });
 }
 async function copyOrderlink(id) {
-  const orderLink = await prisma.orderLink.findUnique({
+  const orderLink = await prisma.productOrderLink.findUnique({
     where: {
       id: id,
     },
