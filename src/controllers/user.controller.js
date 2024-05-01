@@ -34,28 +34,19 @@ async function login(req, res) {
 }
 
 async function getProfileDetails(req, res) {
-  console.log("request come to the backend");
   try {
-    const user = await userService.getProfileDetails(req.user.id);
+
+    const user = await userService.getProfileDetails(req.params.userId);
     res.status(200).json(user);
   } catch (error) {
+    console.log("error", error);
     res.status(500).json({ error: "Internal server error" });
+
   }
 }
 
 
-
-// async function getAllUsers(req, res) {
-//   try {
-//     const users = await userService.getAllUsers();
-//     res.status(200).json(users);
-//   } catch (error) {
-//     res.status(500).json({ error: "Internal server error" });
-//   }
-// }
-
 module.exports = {
-  // getAllUsers,
   register,
   login,
   getProfileDetails,

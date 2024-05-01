@@ -132,12 +132,7 @@ async function getProfileDetails(id) {
   }
 }
 
-// async function getAllUsers() {
-//   return prisma.user.findMany();
-// }
-
 module.exports = {
-  // getAllUsers,
   register,
   login,
   getProfileDetails,
