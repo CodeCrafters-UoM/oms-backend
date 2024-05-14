@@ -32,6 +32,9 @@ async function login(req, res) {
     console.log(err);
   }
 }
+async function logout(req, res) {
+  res.status(200).json({ message: "User logout successfully" });
+}
 // async function getAllUsers(req, res) {
 //   try {
 //     const users = await userService.getAllUsers();
@@ -45,4 +48,5 @@ module.exports = {
   // getAllUsers,
   register,
   login,
+  logout,
 };

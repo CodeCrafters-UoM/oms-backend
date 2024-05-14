@@ -11,5 +11,10 @@ router.post("/register", userController.register);
 //   userController.getAllUsers
 // );
 router.post("/login", userController.login);
+router.post(
+  "/logout",
+  auth.protected.check([Role.SELLER, Role.ADMIN]),
+  userController.logout
+);
 
 module.exports = router;
