@@ -49,11 +49,12 @@ const createOrders = async (id, status) => {
   });
 };
 const createOrder = async (order) => {
+  console.log(order);
   try {
     // Check if the customer already exists based on the mobile number
     let customer = await prisma.customer.findUnique({
       where: {
-        contactNumber: order.customerContactNumber,
+        contactNumber: order.question_5,
       },
     });
 
@@ -61,10 +62,10 @@ const createOrder = async (order) => {
     if (!customer) {
       customer = await prisma.customer.create({
         data: {
-          firstName: order.customerFirstName,
-          lastName: order.customerLastName,
-          email: order.customerEmail,
-          contactNumber: order.customerContactNumber,
+          firstName: order.question_1,
+          lastName: order.question_2,
+          email: order.question_4,
+          contactNumber: order.question_5,
         },
       });
     }
@@ -72,21 +73,19 @@ const createOrder = async (order) => {
     // Create the order associated with the customer
     const newOrder = await prisma.order.create({
       data: {
-        productId: order.productId,
-        quantity: order.quantity,
-        deliveryAddress: order.deliveryAddress,
-        paymentMethod: order.paymentMethod,
-        orderStatus: order.orderStatus,
-        deliveryMethod: order.deliveryMethod,
-        size: order.size,
-        color: order.color,
-        comments: order.comments,
-        sellerId: order.sellerId,
-        customerId: customer.contactNumber, // Use customer's mobile number as foreign key
-        // Add more fields as needed
+        productId: "cfff37d3-96d3-4c64-8ea1-db8dfeabe472",
+        quantity: parseInt(order.question_6),
+        deliveryAddress: order.question_3,
+        paymentMethod: order.question_7,
+        orderStatus: "New",
+        size: order.question_8,
+        color: order.question_9,
+        comments: order.question_10,
+        sellerId: order.seller,
+        customerId: order.question_5,
       },
     });
-
+    console.log(newOrder);
     return newOrder;
   } catch (error) {
     throw new Error(`Error creating order and customer: ${error}`);

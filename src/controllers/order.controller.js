@@ -17,10 +17,9 @@ const createOrders = async (req, res) => {
   }
 };
 const createOrder = async (req, res) => {
-  console.log(req.body);
   try {
-    const { order } = req.body;
-    console.log(order);
+    const order = req.body;
+    // console.log(order);
     const newOrder = orderService.createOrder(order);
     res.status(200).json();
   } catch (error) {

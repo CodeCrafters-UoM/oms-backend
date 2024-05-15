@@ -69,7 +69,6 @@ model Order {
   deliveryAddress String
   paymentMethod   String?
   orderStatus     String
-  deliveryMethod  String?
   size            String?
   color           String?
   comments        String?
@@ -77,7 +76,7 @@ model Order {
   updatedAt       DateTime @updatedAt
   seller          Seller   @relation(fields: [sellerId], references: [userId])
   sellerId        String
-  customer        Customer @relation(fields: [customerId], references: [id])
+  customer        Customer @relation(fields: [customerId], references: [contactNumber])
   customerId      String
 
   @@index([productId])
