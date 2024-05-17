@@ -15,8 +15,19 @@ const updateStatus = async (req, res) => {
     res.status(500).json({ messageee: error.message });
   }
 };
+const createOrder = async (req, res) => {
+  try {
+    const order = req.body;
+    // console.log(order);
+    const newOrder = orderService.createOrder(order);
+    res.status(200).json();
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 module.exports = {
   getAllOrders,
+  createOrder,
   updateStatus,
 };
