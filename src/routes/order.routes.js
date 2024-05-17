@@ -1,11 +1,19 @@
 const express = require("express");
 const router = express.Router();
 const orderController = require("../controllers/order.controller");
+const auth = require("../middlewares/auth");
+const { Role } = require("@prisma/client");
 
-//set the page name
-router.post("/order/addOrders", orderController.createOrders);
-router.get("/orders", orderController.getAllOrders);
-router.put("/orders", orderController.createOrders);
 router.post("/placeorder", orderController.createOrder);
+router.get(
+  "/orders",
+  auth.protected.check([Role.SELLER, Role.ADMIN]),
+  orderController.getAllOrders
+);
+router.put(
+  "/orders",
+  auth.protected.check([Role.SELLER, Role.ADMIN]),
+  orderController.updateStatus
+);
 
 module.exports = router;

@@ -2,18 +2,25 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function getAllProducts(id) {
-  return prisma.product.findMany(
-    {
-      where: {
-        sellerId: id
-      }
-    }
-    );
+  return prisma.product.findMany({
+    where: {
+      sellerId: id,
+    },
+  });
 }
 
 async function createProduct(data) {
   console.log(data);
-  return prisma.product.create({ data });
+  return prisma.product.create({
+    data: {
+      productCode: data.productCode,
+      name: data.name,
+      description: data.description,
+      price: data.price,
+      sellerId: data.sellerId,
+      productOrderLinkId: data.orderLink,
+    },
+  });
 }
 
 async function deleteProduct(productCode) {
@@ -26,7 +33,7 @@ async function deleteProduct(productCode) {
 
   if (!product) {
     // Product not found
-    return { success: false, error: 'Product not found' };
+    return { success: false, error: "Product not found" };
   }
 
   // Delete the product using its id
@@ -52,7 +59,7 @@ async function updateProduct(productCode, newData) {
 
   if (!product) {
     // Product not found
-    return { success: false, error: 'Product not found' };
+    return { success: false, error: "Product not found" };
   }
 
   // Update the product with new data
@@ -68,7 +75,6 @@ async function updateProduct(productCode, newData) {
     return { success: false, error: error.message };
   }
 }
-
 
 module.exports = {
   getAllProducts,
