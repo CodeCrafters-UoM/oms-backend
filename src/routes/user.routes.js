@@ -7,5 +7,6 @@ const { Role } = require("@prisma/client");
 router.post("/login", userController.login);
 
 router.get("/profile/viewprofile/:userId",userController.getProfileDetails);
+router.put("/profile/updateprofile/:userId", userController.updateProfileDetails);
 
 module.exports = router;

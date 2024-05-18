@@ -132,8 +132,26 @@ async function getProfileDetails(id) {
   }
 }
 
+async function updateProfileDetails(id, data) {
+  try {
+    const user = await prisma.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        username: data.username,
+        email: data.email,
+      },
+    });
+    return user;
+  } catch (error) {
+    throw new Error("Error updating user profile:", error);
+  }
+}
+
 module.exports = {
   register,
   login,
   getProfileDetails,
+  updateProfileDetails,
 };
