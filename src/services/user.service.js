@@ -139,7 +139,7 @@ async function updateProfileDetails(id, data) {
         id: id,
       },
       data: {
-        username: data.username,
+        name: data.name,
         email: data.email,
       },
     });
