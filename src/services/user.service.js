@@ -115,12 +115,43 @@ async function login(req) {
     throw new Error("Error logging in:", error);
   }
 }
-// async function getAllUsers() {
-//   return prisma.user.findMany();
-// }
+
+async function getProfileDetails(id) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+    });
+    if (!user) {
+      throw new Error("User not found");
+    }
+    return user;
+  } catch (error) {
+    throw new Error("Error getting user profile:", error);
+  }
+}
+
+async function updateProfileDetails(id, data) {
+  try {
+    const user = await prisma.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        name: data.name,
+        email: data.email,
+      },
+    });
+    return user;
+  } catch (error) {
+    throw new Error("Error updating user profile:", error);
+  }
+}
 
 module.exports = {
-  // getAllUsers,
   register,
   login,
+  getProfileDetails,
+  updateProfileDetails,
 };
