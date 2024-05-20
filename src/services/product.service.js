@@ -11,6 +11,23 @@ async function getAllProducts(id) {
 
 async function createProduct(data) {
   console.log(data);
+  // Verify that the orderLink is available
+  const availableOrderLink = await prisma.productOrderLink.findUnique({
+    where: {
+      id: data.orderLink,
+    },
+    include: {
+      product: true,
+    },
+  });
+
+  if (!availableOrderLink) {
+    throw new Error("Invalid order link");
+  }
+
+  if (availableOrderLink.product) {
+    throw new Error("Order link is already associated with another product");
+  }
   return prisma.product.create({
     data: {
       productCode: data.productCode,
@@ -76,9 +93,34 @@ async function updateProduct(productCode, newData) {
   }
 }
 
+async function getAllOrderlinks() {
+  try {
+    const orderLinksWithProducts = await prisma.productOrderLink.findMany({
+      where:{
+        product:null
+      },
+      include: {
+        product: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        seller: true,
+      },
+    });
+    return orderLinksWithProducts;
+  } catch (error) {
+    console.error("Error fetching order links:", error);
+    throw error;
+  }
+}
+
+
 module.exports = {
   getAllProducts,
   createProduct,
   deleteProduct,
   updateProduct,
+  getAllOrderlinks,
 };
