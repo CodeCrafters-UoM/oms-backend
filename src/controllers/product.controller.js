@@ -1,4 +1,5 @@
 const productService = require("../services/product.service");
+const orderLinkService = require("../services/orderlink.service");
 
 async function getAllProducts(req, res) {
   const id = req.user.id;
@@ -42,9 +43,15 @@ async function updateProduct(req, res) {
   }
 }
 
+async function getAllOrderlinks(req, res) {
+  const orderLinks = await orderlinkService.getAllOrderlinks();
+  res.json(orderLinks);
+}
+
 module.exports = {
   getAllProducts,
   createProduct,
   deleteProduct,
   updateProduct,
+  getAllOrderlinks,
 };
