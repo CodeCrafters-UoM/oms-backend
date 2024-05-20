@@ -1,20 +1,14 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-async function getAllOrderlinks() {
+async function getAllOrderlinks(id) {
   try {
-    const orderLinksWithProducts = await prisma.productOrderLink.findMany({
-      include: {
-        product: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        seller: true,
+    const orderLinks = await prisma.productOrderLink.findMany({
+      where: {
+        sellerId: id,
       },
     });
-    return orderLinksWithProducts;
+    return orderLinks;
   } catch (error) {
     console.error("Error fetching order links:", error);
     throw error;
@@ -39,9 +33,20 @@ async function copyOrderlink(id) {
     },
   });
 }
+async function searchOrderlink(key) {
+  const orderLinks = await prisma.productOrderLink.findMany({
+    where: {
+      name: {
+        contains: key,
+      },
+    },
+  });
+  return orderLinks;
+}
 
 module.exports = {
   getAllOrderlinks,
   createOrderlink,
   deleteOrderlink,
+  searchOrderlink,
 };

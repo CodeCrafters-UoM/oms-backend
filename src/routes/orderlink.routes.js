@@ -19,5 +19,10 @@ router.delete(
   auth.protected.check(Role.SELLER),
   orderlinkController.deleteOrderlink
 );
+router.get(
+  "/orderlinks/search",
+  auth.protected.check(Role.SELLER),
+  orderlinkController.searchOrderlink
+);
 
 module.exports = router;

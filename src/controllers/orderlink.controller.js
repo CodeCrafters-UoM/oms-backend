@@ -1,14 +1,18 @@
 const orderlinkService = require("../services/orderlink.service");
 
 async function getAllOrderlinks(req, res) {
-  const orderLinks = await orderlinkService.getAllOrderlinks();
+  const id = req.user.id;
+  const orderLinks = await orderlinkService.getAllOrderlinks(id);
   res.json(orderLinks);
 }
 
 async function createOrderlink(req, res) {
-  console.log(req.body);
-  const newOrderLink = await orderlinkService.createOrderlink(req.body);
-  res.json(newOrderLink).status(201);
+  try {
+    const newOrderLink = await orderlinkService.createOrderlink(req.body);
+    res.json(newOrderLink).status(200);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
 }
 async function deleteOrderlink(req, res) {
   try {
@@ -21,8 +25,18 @@ async function deleteOrderlink(req, res) {
     res.status(500).json({ success: false, error: error.message });
   }
 }
+async function searchOrderlink(req, res) {
+  try {
+    const key = req.query.key;
+    const orderLinks = await orderlinkService.searchOrderlink(key);
+    res.status(200).json(orderLinks);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+}
 module.exports = {
   getAllOrderlinks,
   createOrderlink,
   deleteOrderlink,
+  searchOrderlink,
 };
