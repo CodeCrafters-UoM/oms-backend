@@ -70,7 +70,7 @@ const createOrder = async (order) => {
     }
     const newOrder = await prisma.order.create({
       data: {
-        productId: "cfff37d3-96d3-4c64-8ea1-db8dfeabe472",
+        productId: order.product,
         quantity: parseInt(order.question_6),
         deliveryAddress: order.question_3,
         paymentMethod: order.question_7,

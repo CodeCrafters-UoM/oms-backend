@@ -7,6 +7,14 @@ async function getAllOrderlinks(id) {
       where: {
         sellerId: id,
       },
+      include: {
+        product: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
     return orderLinks;
   } catch (error) {
@@ -26,13 +34,6 @@ async function deleteOrderlink(id) {
     },
   });
 }
-async function copyOrderlink(id) {
-  const orderLink = await prisma.productOrderLink.findUnique({
-    where: {
-      id: id,
-    },
-  });
-}
 async function searchOrderlink(key) {
   const orderLinks = await prisma.productOrderLink.findMany({
     where: {
@@ -43,10 +44,55 @@ async function searchOrderlink(key) {
   });
   return orderLinks;
 }
+async function updateOrderlink(id, newLinkParams) {
+  const orderLink = await prisma.productOrderLink.findUnique({
+    where: {
+      id: id,
+    },
+  });
+  const oldLink = orderLink.link;
+  try {
+    await prisma.productOrderLink.update({
+      where: {
+        id: id,
+      },
+      data: {
+        link: `${oldLink}&product=${newLinkParams.product}&productId=${newLinkParams.productId}`,
+      },
+    });
+    return { success: true };
+  } catch (error) {
+    console.log(error);
+    return { success: false, error: error.message };
+  }
+}
+async function getAvailableOrderlinks() {
+  try {
+    const orderLinksWithProducts = await prisma.productOrderLink.findMany({
+      where: {
+        product: null,
+      },
+      include: {
+        product: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+    return orderLinksWithProducts;
+  } catch (error) {
+    console.error("Error fetching order links:", error);
+    throw error;
+  }
+}
 
 module.exports = {
   getAllOrderlinks,
   createOrderlink,
   deleteOrderlink,
   searchOrderlink,
+  updateOrderlink,
+  getAvailableOrderlinks,
 };

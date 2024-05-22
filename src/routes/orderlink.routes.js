@@ -24,5 +24,14 @@ router.get(
   auth.protected.check(Role.SELLER),
   orderlinkController.searchOrderlink
 );
-
+router.put(
+  "/orderlinks/update/:id",
+  auth.protected.check(Role.SELLER),
+  orderlinkController.updateOrderlink
+);
+router.get(
+  "/orderlinks/available",
+  auth.protected.check([Role.SELLER, Role.ADMIN]),
+  orderlinkController.getAvailableOrderlinks
+);
 module.exports = router;
