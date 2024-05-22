@@ -35,7 +35,7 @@ model Seller {
   user              User               @relation(fields: [userId], references: [id])
   userId            String             @unique
   businessName      String
-  contactNumber     String //@unique
+  contactNumber     String
   products          Product[]
   orders            Order[]
   productOrderLinks ProductOrderLink[]
@@ -99,7 +99,7 @@ model ProductOrderLink {
   id        String   @id @default(uuid())
   name      String
   product   Product?
-  link      String
+  link      String   @db.VarChar(512)
   seller    Seller   @relation(fields: [sellerId], references: [userId])
   sellerId  String
   createdAt DateTime @default(now())

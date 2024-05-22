@@ -34,9 +34,32 @@ async function searchOrderlink(req, res) {
     res.status(500).json({ success: false, error: error.message });
   }
 }
+async function updateOrderlink(req, res) {
+  try {
+    const { id } = req.params;
+    const newLinkParams = req.body;
+    const result = await orderlinkService.updateOrderlink(id, newLinkParams);
+    if (result.success) {
+      res
+        .status(200)
+        .json({ success: true, message: "Orderlink updated successfully" });
+    } else {
+      res.status(404).json({ success: false, error: result.error });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+}
+async function getAvailableOrderlinks(req, res) {
+  const orderLinks = await orderlinkService.getAvailableOrderlinks();
+  res.json(orderLinks);
+}
 module.exports = {
   getAllOrderlinks,
   createOrderlink,
   deleteOrderlink,
   searchOrderlink,
+  updateOrderlink,
+  getAvailableOrderlinks,
 };

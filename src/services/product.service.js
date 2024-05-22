@@ -10,8 +10,6 @@ async function getAllProducts(id) {
 }
 
 async function createProduct(data) {
-  console.log(data);
-  // Verify that the orderLink is available
   const availableOrderLink = await prisma.productOrderLink.findUnique({
     where: {
       id: data.orderLink,
@@ -41,7 +39,6 @@ async function createProduct(data) {
 }
 
 async function deleteProduct(productCode) {
-  // Find the product based on the productCode
   const product = await prisma.product.findUnique({
     where: {
       productCode: productCode,
@@ -49,11 +46,8 @@ async function deleteProduct(productCode) {
   });
 
   if (!product) {
-    // Product not found
     return { success: false, error: "Product not found" };
   }
-
-  // Delete the product using its id
   try {
     await prisma.product.delete({
       where: {
@@ -67,7 +61,6 @@ async function deleteProduct(productCode) {
 }
 
 async function updateProduct(productCode, newData) {
-  // Find the product based on the productCode
   const product = await prisma.product.findUnique({
     where: {
       productCode: productCode,
@@ -75,11 +68,8 @@ async function updateProduct(productCode, newData) {
   });
 
   if (!product) {
-    // Product not found
     return { success: false, error: "Product not found" };
   }
-
-  // Update the product with new data
   try {
     await prisma.product.update({
       where: {
@@ -92,35 +82,9 @@ async function updateProduct(productCode, newData) {
     return { success: false, error: error.message };
   }
 }
-
-async function getAllOrderlinks() {
-  try {
-    const orderLinksWithProducts = await prisma.productOrderLink.findMany({
-      where:{
-        product:null
-      },
-      include: {
-        product: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        seller: true,
-      },
-    });
-    return orderLinksWithProducts;
-  } catch (error) {
-    console.error("Error fetching order links:", error);
-    throw error;
-  }
-}
-
-
 module.exports = {
   getAllProducts,
   createProduct,
   deleteProduct,
   updateProduct,
-  getAllOrderlinks,
 };
