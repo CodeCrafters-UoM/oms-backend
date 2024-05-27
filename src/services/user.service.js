@@ -149,17 +149,30 @@ async function getProfileDetails(id) {
 }
 
 async function updateProfileDetails(id, data) {
+  const { name, email, businessName, contactNumber } = data;
+
   try {
-    const user = await prisma.user.update({
-      where: {
-        id: id,
-      },
-      data: {
-        name: data.name,
-        email: data.email,
-      },
-    });
-    return user;
+    const [user, seller] = await prisma.$transaction([
+      prisma.user.update({
+        where: {
+          id: id,
+        },
+        data: {
+          name: name,
+          email: email,
+        },
+      }),
+      prisma.seller.update({
+        where: {
+          userId: id,
+        },
+        data: {
+          businessName: businessName,
+          contactNumber: contactNumber,
+        },
+      }),
+    ]);
+    return { user, seller };
   } catch (error) {
     throw new Error("Error updating user profile:", error);
   }
