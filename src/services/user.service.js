@@ -122,11 +122,27 @@ async function getProfileDetails(id) {
       where: {
         id: id,
       },
+        include: {
+          seller: true, 
+        },
     });
+
     if (!user) {
       throw new Error("User not found");
     }
-    return user;
+    const profileData = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      username: user.username,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      businessName: user.seller ? user.seller.businessName : null,
+      contactNumber: user.seller ? user.seller.contactNumber : null,
+    };
+
+    return profileData;
   } catch (error) {
     throw new Error("Error getting user profile:", error);
   }
