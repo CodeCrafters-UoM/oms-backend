@@ -66,10 +66,11 @@ async function updateOrderlink(id, newLinkParams) {
     return { success: false, error: error.message };
   }
 }
-async function getAvailableOrderlinks() {
+async function getAvailableOrderlinks(id) {
   try {
     const orderLinksWithProducts = await prisma.productOrderLink.findMany({
       where: {
+        sellerId: id,
         product: null,
       },
       include: {
