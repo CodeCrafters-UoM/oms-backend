@@ -52,7 +52,6 @@ async function updateOrderlink(req, res) {
   }
 }
 async function getAvailableOrderlinks(req, res) {
-  console.log(req);
   const id = req.user.id;
   const orderLinks = await orderlinkService.getAvailableOrderlinks(id);
   res.json(orderLinks);
