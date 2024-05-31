@@ -108,6 +108,16 @@ model ProductOrderLink {
   @@index([sellerId])
 }
 
+model ContactUs {
+  id            String   @id @default(uuid())
+  name          String
+  businessName  String
+  contactNumber String
+  message       String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
 enum Role {
   ADMIN
   SELLER
