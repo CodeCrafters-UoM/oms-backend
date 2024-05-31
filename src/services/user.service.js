@@ -122,28 +122,57 @@ async function getProfileDetails(id) {
       where: {
         id: id,
       },
+        include: {
+          seller: true, 
+        },
     });
+
     if (!user) {
       throw new Error("User not found");
     }
-    return user;
+    const profileData = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      username: user.username,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      businessName: user.seller ? user.seller.businessName : null,
+      contactNumber: user.seller ? user.seller.contactNumber : null,
+    };
+
+    return profileData;
   } catch (error) {
     throw new Error("Error getting user profile:", error);
   }
 }
 
 async function updateProfileDetails(id, data) {
+  const { name, email, businessName, contactNumber } = data;
+
   try {
-    const user = await prisma.user.update({
-      where: {
-        id: id,
-      },
-      data: {
-        name: data.name,
-        email: data.email,
-      },
-    });
-    return user;
+    const [user, seller] = await prisma.$transaction([
+      prisma.user.update({
+        where: {
+          id: id,
+        },
+        data: {
+          name: name,
+          email: email,
+        },
+      }),
+      prisma.seller.update({
+        where: {
+          userId: id,
+        },
+        data: {
+          businessName: businessName,
+          contactNumber: contactNumber,
+        },
+      }),
+    ]);
+    return { user, seller };
   } catch (error) {
     throw new Error("Error updating user profile:", error);
   }
