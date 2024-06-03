@@ -57,7 +57,7 @@ async function updateOrderlink(id, newLinkParams) {
         id: id,
       },
       data: {
-        link: `${oldLink}&product=${newLinkParams.product}&productId=${newLinkParams.productId}`,
+        link: `${oldLink}&product=${newLinkParams.product}&productId=${newLinkParams.productId}&id=${id}`,
       },
     });
     return { success: true };

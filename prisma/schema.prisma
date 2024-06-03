@@ -1,3 +1,128 @@
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// datasource db {
+//   provider     = "mysql"
+//   url          = env("LOCAL_DATABASE_URL")
+//   relationMode = "prisma"
+// }
+
+// model User {
+//   id        String   @id @default(uuid())
+//   name      String
+//   email     String   @unique
+//   username  String   @unique
+//   image     String?
+//   role      Role     @default(SELLER)
+//   password  String
+//   admin     Admin?
+//   seller    Seller?
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@unique([username, email])
+// }
+
+// model Admin {
+//   user      User     @relation(fields: [userId], references: [id])
+//   userId    String   @unique
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model Seller {
+//   user              User               @relation(fields: [userId], references: [id])
+//   userId            String             @unique
+//   businessName      String
+//   contactNumber     String
+//   products          Product[]
+//   orders            Order[]
+//   productOrderLinks ProductOrderLink[]
+//   createdAt         DateTime           @default(now())
+//   updatedAt         DateTime           @updatedAt
+// }
+
+// model Product {
+//   id                 String           @id @default(uuid())
+//   productCode        String           @unique
+//   name               String
+//   description        String
+//   price              Float
+//   seller             Seller           @relation(fields: [sellerId], references: [userId])
+//   sellerId           String
+//   createdAt          DateTime         @default(now())
+//   updatedAt          DateTime         @updatedAt
+//   order              Order[]
+//   productOrderLink   ProductOrderLink @relation(fields: [productOrderLinkId], references: [id])
+//   productOrderLinkId String           @unique
+
+//   @@index([sellerId])
+//   @@index([productOrderLinkId])
+// }
+
+// model Order {
+//   orderId         Int      @id @default(autoincrement())
+//   productId       String
+//   product         Product  @relation(fields: [productId], references: [id])
+//   quantity        Int?
+//   deliveryAddress String
+//   paymentMethod   String?
+//   orderStatus     String
+//   size            String?
+//   color           String?
+//   comments        String?
+//   createdAt       DateTime @default(now())
+//   updatedAt       DateTime @updatedAt
+//   seller          Seller   @relation(fields: [sellerId], references: [userId])
+//   sellerId        String
+//   customer        Customer @relation(fields: [customerId], references: [contactNumber])
+//   customerId      String
+
+//   @@index([productId])
+//   @@index([sellerId])
+//   @@index([customerId])
+// }
+
+// model Customer {
+//   id            String   @id @default(uuid())
+//   firstName     String
+//   lastName      String
+//   email         String?  @unique
+//   contactNumber String   @unique
+//   createdAt     DateTime @default(now())
+//   updatedAt     DateTime @updatedAt
+//   orders        Order[]
+// }
+
+// model ProductOrderLink {
+//   id        String   @id @default(uuid())
+//   name      String
+//   product   Product?
+//   link      String   @db.VarChar(512)
+//   seller    Seller   @relation(fields: [sellerId], references: [userId])
+//   sellerId  String
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@index([sellerId])
+// }
+
+// model ContactUs {
+//   id            String   @id @default(uuid())
+//   name          String
+//   businessName  String
+//   contactNumber String
+//   message       String
+//   createdAt     DateTime @default(now())
+//   updatedAt     DateTime @updatedAt
+// }
+
+// enum Role {
+//   ADMIN
+//   SELLER
+// }
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -62,22 +187,23 @@ model Product {
 }
 
 model Order {
-  orderId         Int      @id @default(autoincrement())
-  productId       String
-  product         Product  @relation(fields: [productId], references: [id])
-  quantity        Int?
-  deliveryAddress String
-  paymentMethod   String?
-  orderStatus     String
-  size            String?
-  color           String?
-  comments        String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  seller          Seller   @relation(fields: [sellerId], references: [userId])
-  sellerId        String
-  customer        Customer @relation(fields: [customerId], references: [contactNumber])
-  customerId      String
+  orderId           Int      @id @default(autoincrement())
+  productId         String
+  product           Product  @relation(fields: [productId], references: [id])
+  quantity          Int?
+  deliveryAddress   String
+  paymentMethod     String?
+  orderStatus       String
+  size              String?
+  color             String?
+  comments          String?
+  seller            Seller   @relation(fields: [sellerId], references: [userId])
+  sellerId          String
+  customer          Customer @relation(fields: [customerId], references: [contactNumber])
+  customerId        String
+  customisedAnswers Json?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   @@index([productId])
   @@index([sellerId])
@@ -96,17 +222,31 @@ model Customer {
 }
 
 model ProductOrderLink {
-  id        String   @id @default(uuid())
-  name      String
-  product   Product?
-  link      String   @db.VarChar(512)
-  seller    Seller   @relation(fields: [sellerId], references: [userId])
-  sellerId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                  String   @id @default(uuid())
+  name                String
+  product             Product?
+  link                String   @db.VarChar(512)
+  seller              Seller   @relation(fields: [sellerId], references: [userId])
+  sellerId            String
+  // customisedQuestions Question[]
+  customisedQuestions Json?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 
   @@index([sellerId])
 }
+
+// model Question {
+//   id                 String           @id @default(uuid())
+//   question           String
+//   type               QuestionType     @default(TEXT)
+//   productOrderLink   ProductOrderLink @relation(fields: [productOrderLinkId], references: [id])
+//   productOrderLinkId String
+//   createdAt          DateTime         @default(now())
+//   updatedAt          DateTime         @updatedAt
+
+//   @@index([productOrderLinkId])
+// }
 
 model ContactUs {
   id            String   @id @default(uuid())
@@ -121,4 +261,10 @@ model ContactUs {
 enum Role {
   ADMIN
   SELLER
+}
+
+enum QuestionType {
+  TEXT
+  RADIO
+  CHECKBOX
 }

@@ -18,6 +18,7 @@ const updateStatus = async (req, res) => {
 const createOrder = async (req, res) => {
   try {
     const order = req.body;
+    console.log(order); 
     const newOrder = orderService.createOrder(order);
     res.status(200).json();
   } catch (error) {
