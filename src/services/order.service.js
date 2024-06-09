@@ -48,12 +48,11 @@ const updateStatus = async (id, status) => {
   });
 };
 const createOrder = async (order) => {
-  console.log(order);
   try {
     // Check if the customer already exists based on the mobile number
     let customer = await prisma.customer.findUnique({
       where: {
-        contactNumber: order.question_5,
+        contactNumber: order["Your phone number : "],
       },
     });
 
@@ -61,25 +60,27 @@ const createOrder = async (order) => {
     if (!customer) {
       customer = await prisma.customer.create({
         data: {
-          firstName: order.question_1,
-          lastName: order.question_2,
-          email: order.question_4,
-          contactNumber: order.question_5,
+          firstName: order["Your first name : "],
+          lastName: order["Your last name : "],
+          email: order["Your email address : "],
+          contactNumber: order["Your phone number : "],
         },
       });
     }
+    console.log(customer);
     const newOrder = await prisma.order.create({
       data: {
         productId: order.product,
-        quantity: parseInt(order.question_6),
-        deliveryAddress: order.question_3,
-        paymentMethod: order.question_7,
+        quantity: parseInt(order["Quantity you need : "]),
+        deliveryAddress: order["Your delivery address : "],
+        paymentMethod: order["Your preferred payment method : "],
         orderStatus: "New",
-        size: order.question_8,
-        color: order.question_9,
-        comments: order.question_10,
+        size: order["Size of the item : "],
+        color: order["Color of the item : "],
+        comments: order["Comments : "],
         sellerId: order.seller,
-        customerId: order.question_5,
+        customerId: order["Your phone number : "],
+        customisedAnswers: order.customisedAnswers,
       },
     });
     console.log(newOrder);

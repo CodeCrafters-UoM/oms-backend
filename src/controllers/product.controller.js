@@ -14,7 +14,6 @@ async function createProduct(req, res) {
 
 async function deleteProduct(req, res) {
   try {
-    console.log(req.params);
     const { productCode } = req.params;
     await productService.deleteProduct(productCode);
     res
