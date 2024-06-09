@@ -1,12 +1,11 @@
 const orderformService = require("../services/orderform.service");
 
-async function getCustomQuestions(req, res) {
+async function getOrderformDetails(req, res) {
   const id = req.params.linkId;
-  console.log("id", id);
-  const customQuestions = await orderformService.getCustomQuestions(id);
+  const customQuestions = await orderformService.getOrderformDetails(id);
   res.json(customQuestions);
 }
 
 module.exports = {
-  getCustomQuestions,
+  getOrderformDetails,
 };

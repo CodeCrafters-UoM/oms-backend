@@ -24,7 +24,7 @@ async function getAllOrderlinks(id) {
 }
 
 async function createOrderlink(data) {
-  console.log(data);
+  console.log("data", data);
   return prisma.productOrderLink.create({ data });
 }
 async function deleteOrderlink(id) {
@@ -44,7 +44,7 @@ async function searchOrderlink(key) {
   });
   return orderLinks;
 }
-async function updateOrderlink(id, newLinkParams) {
+async function updateOrderlink(id) {
   const orderLink = await prisma.productOrderLink.findUnique({
     where: {
       id: id,
@@ -57,7 +57,7 @@ async function updateOrderlink(id, newLinkParams) {
         id: id,
       },
       data: {
-        link: `${oldLink}&product=${newLinkParams.product}&productId=${newLinkParams.productId}&id=${id}`,
+        link: `${oldLink}&id=${id}`,
       },
     });
     return { success: true };
