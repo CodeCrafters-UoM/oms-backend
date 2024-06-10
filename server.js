@@ -3,14 +3,10 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const userRoutes = require("./src/routes/user.routes");
-const sellerRoutes = require("./src/routes/seller.routes");
 const productRoutes = require("./src/routes/product.routes");
 const orderlinkRoutes = require("./src/routes/orderlink.routes");
 const orderRoutes = require("./src/routes/order.routes");
 const sellerRoutes = require("./src/routes/seller.routes");
-const productRoutes = require("./src/routes/product.routes");
-const orderlinkRoutes = require("./src/routes/orderlink.routes");
-const orderRoutes = require("./src/routes/order.routes");
 const orderformRoutes = require("./src/routes/orderform.routes");
 const { initWebSocketServer } = require("./notificationService");
 
@@ -29,13 +25,8 @@ app.use(
     credentials: true,
   })
 );
-
-app.use(express.json());
-
-app.use(cors());
-
-// app.use(sellerRoutes);
 app.use(cookieParser());
+
 app.use("/api/v1", userRoutes);
 app.use(productRoutes);
 app.use(orderlinkRoutes);
