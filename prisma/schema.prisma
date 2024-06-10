@@ -9,17 +9,19 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  username  String   @unique
-  image     String?
-  role      Role     @default(SELLER)
-  password  String
-  admin     Admin?
-  seller    Seller?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String          @id @default(uuid())
+  name           String
+  email          String          @unique
+  username       String          @unique
+  image          String?
+  role           Role            @default(SELLER)
+  password       String
+  admin          Admin?
+  seller         Seller?
+  passwordResets PasswordReset[]
+  notifications  Notification[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 
   @@unique([username, email])
 }
@@ -62,9 +64,9 @@ model Product {
 }
 
 model Order {
-  orderId           Int      @id @default(autoincrement())
+  orderId           Int            @id @default(autoincrement())
   productId         String
-  product           Product  @relation(fields: [productId], references: [id])
+  product           Product        @relation(fields: [productId], references: [id])
   quantity          Int?
   deliveryAddress   String
   paymentMethod     String?
@@ -72,13 +74,14 @@ model Order {
   size              String?
   color             String?
   comments          String?
-  seller            Seller   @relation(fields: [sellerId], references: [userId])
+  seller            Seller         @relation(fields: [sellerId], references: [userId])
   sellerId          String
-  customer          Customer @relation(fields: [customerId], references: [contactNumber])
+  customer          Customer       @relation(fields: [customerId], references: [contactNumber])
   customerId        String
   customisedAnswers Json?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  notification      Notification[]
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
 
   @@index([productId])
   @@index([sellerId])
@@ -122,6 +125,34 @@ model ContactUs {
   message       String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+model PasswordReset {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  otp       String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  message   String
+  read      Boolean  @default(false)
+  order     Order    @relation(fields: [orderId], references: [orderId])
+  orderId   Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([orderId])
 }
 
 enum Role {
