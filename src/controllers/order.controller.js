@@ -18,7 +18,7 @@ const updateStatus = async (req, res) => {
 };
 const createOrder = async (req, res) => {
   try {
-    const order = req.body;
+    const order = req.body; 
     const newOrder = orderService.createOrder(order);
 
      // Send WebSocket notification

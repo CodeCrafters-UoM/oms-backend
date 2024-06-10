@@ -62,22 +62,23 @@ model Product {
 }
 
 model Order {
-  orderId         Int      @id @default(autoincrement())
-  productId       String
-  product         Product  @relation(fields: [productId], references: [id])
-  quantity        Int?
-  deliveryAddress String
-  paymentMethod   String?
-  orderStatus     String
-  size            String?
-  color           String?
-  comments        String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  seller          Seller   @relation(fields: [sellerId], references: [userId])
-  sellerId        String
-  customer        Customer @relation(fields: [customerId], references: [contactNumber])
-  customerId      String
+  orderId           Int      @id @default(autoincrement())
+  productId         String
+  product           Product  @relation(fields: [productId], references: [id])
+  quantity          Int?
+  deliveryAddress   String
+  paymentMethod     String?
+  orderStatus       String
+  size              String?
+  color             String?
+  comments          String?
+  seller            Seller   @relation(fields: [sellerId], references: [userId])
+  sellerId          String
+  customer          Customer @relation(fields: [customerId], references: [contactNumber])
+  customerId        String
+  customisedAnswers Json?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   @@index([productId])
   @@index([sellerId])
@@ -96,19 +97,40 @@ model Customer {
 }
 
 model ProductOrderLink {
-  id        String   @id @default(uuid())
-  name      String
-  product   Product?
-  link      String   @db.VarChar(512)
-  seller    Seller   @relation(fields: [sellerId], references: [userId])
-  sellerId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                   String   @id @default(uuid())
+  name                 String
+  product              Product?
+  link                 String   @db.VarChar(512)
+  seller               Seller   @relation(fields: [sellerId], references: [userId])
+  sellerId             String
+  selectedQuestions    Json?
+  paymentMethodOptions String
+  sizeOptions          String?
+  colorOptions         String?
+  customisedQuestions  Json?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 
   @@index([sellerId])
+}
+
+model ContactUs {
+  id            String   @id @default(uuid())
+  name          String
+  businessName  String
+  contactNumber String
+  message       String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 enum Role {
   ADMIN
   SELLER
+}
+
+enum QuestionType {
+  TEXT
+  RADIO
+  CHECKBOX
 }

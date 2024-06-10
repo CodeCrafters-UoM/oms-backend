@@ -37,8 +37,8 @@ async function searchOrderlink(req, res) {
 async function updateOrderlink(req, res) {
   try {
     const { id } = req.params;
-    const newLinkParams = req.body;
-    const result = await orderlinkService.updateOrderlink(id, newLinkParams);
+    // const newLinkParams = req.body;
+    const result = await orderlinkService.updateOrderlink(id);
     if (result.success) {
       res
         .status(200)
@@ -52,7 +52,8 @@ async function updateOrderlink(req, res) {
   }
 }
 async function getAvailableOrderlinks(req, res) {
-  const orderLinks = await orderlinkService.getAvailableOrderlinks();
+  const id = req.user.id;
+  const orderLinks = await orderlinkService.getAvailableOrderlinks(id);
   res.json(orderLinks);
 }
 module.exports = {
