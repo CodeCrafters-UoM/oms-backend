@@ -19,9 +19,10 @@ function initWebSocketServer(httpServer) {
   });
 }
 
-function sendNotification(message) {
+function sendNotification(order) {
   if (io) {
-    io.emit("notification", message);
+    const message = `New order for product: ${order.product.name}`;
+    io.emit("notification", { message, time: new Date().toLocaleTimeString() });
   } else {
     console.log("WebSocket server not initialized");
   }

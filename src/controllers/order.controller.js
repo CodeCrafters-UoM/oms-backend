@@ -22,7 +22,11 @@ const createOrder = async (req, res) => {
     const newOrder = orderService.createOrder(order);
 
      // Send WebSocket notification
-     sendNotification("New order added");
+     sendNotification({
+      product: {
+        name: order.product, // Replace with the actual product name from order object
+      },
+    });
 
      res.status(200).json(newOrder);
   } catch (error) {
