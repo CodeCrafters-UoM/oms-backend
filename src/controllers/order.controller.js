@@ -19,17 +19,14 @@ const updateStatus = async (req, res) => {
 const createOrder = async (req, res) => {
   try {
     const order = req.body; 
-    const newOrder = orderService.createOrder(order);
+    const newOrder = await orderService.createOrder(order);
 
      // Send WebSocket notification
-     sendNotification({
-      product: {
-        name: order.product, // Replace with the actual product name from order object
-      },
-    });
+     await sendNotification(newOrder);
 
      res.status(200).json(newOrder);
   } catch (error) {
+    console.error("Error creating order:", error);
     res.status(500).json({ message: error.message });
   }
 };

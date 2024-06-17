@@ -1,4 +1,7 @@
 const { Server } = require("socket.io");
+const { PrismaClient } = require("@prisma/client");
+
+const prisma = new PrismaClient();
 
 let io;
 
@@ -19,13 +22,64 @@ function initWebSocketServer(httpServer) {
   });
 }
 
-function sendNotification(order) {
-  if (io) {
-    const message = `New order for product: ${order.product.name}`;
-    io.emit("notification", { message, time: new Date().toLocaleTimeString() });
-  } else {
-    console.log("WebSocket server not initialized");
+async function sendNotification(order) {
+  if (!io) {
+    console.log('WebSocket server not initialized');
+    return;
+  }
+
+  try {
+    // Fetch product details
+    const product = await prisma.product.findUnique({
+      where: {
+        id: order.productId,
+      },
+    });
+
+    if (!product) {
+      console.log('Product not found');
+      return;
+    }
+      const time = new Date().toLocaleTimeString();
+      const message = `New order received for the product: ${product.id} at ${time}`;
+
+      const notification = await prisma.notification.create({
+        data: {
+          message,
+          read: false,
+          userId: order.sellerId, // Assuming order has a reference to the seller
+          orderId: order.orderId, // Assuming order has an orderId field
+        },
+      });
+
+      io.emit("notification", {
+        id: notification.id,
+        message: notification.message,
+        read: notification.read,
+        userId: notification.userId,
+        orderId: notification.orderId,
+        createdAt: notification.createdAt,
+      });
+  } catch (error) {
+    console.error("Error sending notification:", error);
   }
 }
 
-module.exports = { initWebSocketServer, sendNotification };
+async function getNotifications(userId) {
+  try {
+    const notifications = await prisma.notification.findMany({
+      where: {
+        userId,
+      },
+      orderBy: {
+        createdAt: 'desc', // Order by most recent notifications first
+      },
+    });
+    return notifications;
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+    return [];
+  }
+}
+
+module.exports = { initWebSocketServer, sendNotification, getNotifications };
