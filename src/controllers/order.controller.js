@@ -1,5 +1,5 @@
 const orderService = require("../services/order.service");
-const { sendNotification } = require("../../notificationService");
+const { sendNotification } = require("../services/notification.service");
 
 async function getAllOrders(req, res) {
   const id = req.user.id;
