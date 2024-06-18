@@ -20,16 +20,9 @@ router.post(
 
 // Optionally, a route to mark notifications as read
 router.put(
-  "/notifications/:id/read",
+  "/notifications/read",
   auth.protected.check([Role.SELLER, Role.ADMIN, Role.BUYER]),
-  notificationController.markAsRead
-);
-
-// Optionally, a route to delete a notification
-router.delete(
-  "/notifications/:id",
-  auth.protected.check([Role.SELLER, Role.ADMIN, Role.BUYER]),
-  notificationController.deleteNotification
+  notificationController.markAllNotificationsAsRead
 );
 
 module.exports = router;

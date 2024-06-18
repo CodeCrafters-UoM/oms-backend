@@ -99,33 +99,21 @@ async function createNotification(userId, message, orderId) {
     }
   }
   
-  async function markAsRead(notificationId) {
+  async function markAllNotificationsAsRead(userId) {
     try {
-      const notification = await prisma.notification.update({
+      const notifications = await prisma.notification.updateMany({
         where: {
-          id: notificationId,
+          userId,
+          read: false,
         },
         data: {
           read: true,
         },
       });
-      return notification;
+      return notifications;
     } catch (error) {
       console.error("Error marking notification as read:", error);
-      throw new Error("Error marking notification as read");
-    }
-  }
-  
-  async function deleteNotification(notificationId) {
-    try {
-      await prisma.notification.delete({
-        where: {
-          id: notificationId,
-        },
-      });
-    } catch (error) {
-      console.error("Error deleting notification:", error);
-      throw new Error("Error deleting notification");
+      res.status(500).json({ error: "Failed to mark notifications as read" });
     }
   }
   
@@ -134,6 +122,5 @@ async function createNotification(userId, message, orderId) {
     sendNotification,
     getNotifications,
     createNotification,
-    markAsRead,
-    deleteNotification,
+    markAllNotificationsAsRead,
   };

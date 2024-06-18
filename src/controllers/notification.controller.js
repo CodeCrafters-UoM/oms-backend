@@ -22,31 +22,19 @@ const createNotification = async (req, res) => {
   }
 };
 
-const markAsRead = async (req, res) => {
-  const notificationId = req.params.id;
+const markAllNotificationsAsRead = async (req, res) => {
+  const userId = req.user.id;
   try {
-    const notification = await notificationService.markAsRead(notificationId);
-    res.json(notification);
+    const notifications = await notificationService.markAllNotificationsAsRead(userId);
+    res.status(200).json(notifications); 
   } catch (error) {
     console.error("Error marking notification as read:", error);
     res.status(500).json({ message: "Failed to mark notification as read" });
   }
 };
 
-const deleteNotification = async (req, res) => {
-  const notificationId = req.params.id;
-  try {
-    await notificationService.deleteNotification(notificationId);
-    res.status(204).send();
-  } catch (error) {
-    console.error("Error deleting notification:", error);
-    res.status(500).json({ message: "Failed to delete notification" });
-  }
-};
-
 module.exports = {
   getNotifications,
   createNotification,
-  markAsRead,
-  deleteNotification,
+  markAllNotificationsAsRead,
 };
