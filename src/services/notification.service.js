@@ -40,9 +40,10 @@ async function sendNotification(order) {
       console.log('Product not found');
       return;
     }
-      const time = new Date().toLocaleTimeString();
-      const message = `New order received for the product: ${product.id} at ${time}`;
-
+    const time = new Date().toLocaleTimeString();
+    const date = new Date().toLocaleDateString();
+    const message = `New order received for ${product.name}\n${date} at ${time}`;
+    
       const notification = await prisma.notification.create({
         data: {
           message,
@@ -70,6 +71,7 @@ async function getNotifications(userId) {
     const notifications = await prisma.notification.findMany({
       where: {
         userId,
+        // read: false,
       },
       orderBy: {
         createdAt: 'desc', // Order by most recent notifications first
