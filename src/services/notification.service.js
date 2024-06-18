@@ -82,4 +82,58 @@ async function getNotifications(userId) {
   }
 }
 
-module.exports = { initWebSocketServer, sendNotification, getNotifications };
+async function createNotification(userId, message, orderId) {
+    try {
+      const notification = await prisma.notification.create({
+        data: {
+          message,
+          read: false,
+          userId,
+          orderId,
+        },
+      });
+      return notification;
+    } catch (error) {
+      console.error("Error creating notification:", error);
+      throw new Error("Error creating notification");
+    }
+  }
+  
+  async function markAsRead(notificationId) {
+    try {
+      const notification = await prisma.notification.update({
+        where: {
+          id: notificationId,
+        },
+        data: {
+          read: true,
+        },
+      });
+      return notification;
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+      throw new Error("Error marking notification as read");
+    }
+  }
+  
+  async function deleteNotification(notificationId) {
+    try {
+      await prisma.notification.delete({
+        where: {
+          id: notificationId,
+        },
+      });
+    } catch (error) {
+      console.error("Error deleting notification:", error);
+      throw new Error("Error deleting notification");
+    }
+  }
+  
+  module.exports = {
+    initWebSocketServer,
+    sendNotification,
+    getNotifications,
+    createNotification,
+    markAsRead,
+    deleteNotification,
+  };
