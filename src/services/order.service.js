@@ -1,8 +1,10 @@
 const { PrismaClient } = require("@prisma/client");
+const { ReadStream } = require("fs");
 const { request } = require("http");
 const prisma = new PrismaClient();
 
 async function getAllOrders(id) {
+  try {
   const ordersWithCustomer = await prisma.order.findMany({
     where: {
       sellerId: id,
@@ -10,10 +12,11 @@ async function getAllOrders(id) {
     include: {
       customer: {
         select: {
+          id: true,
           firstName: true,
           lastName: true,
           contactNumber: true,
-          orders: true,
+          orders: true, 
         },
       },
       product: {
@@ -21,20 +24,36 @@ async function getAllOrders(id) {
           productCode: true,
           name: true,
           price: true,
+          description: true,
         },
       },
     },
   });
-  const orders = ordersWithCustomer.map((order) => ({
-    ...order,
-    customerName: `${order.customer.firstName} ${order.customer.lastName}`,
-    contactNumber: order.customer.contactNumber,
-    allOrder: order.customer.orders,
-    productCode: order.product.productCode,
-    unitPrice: order.product.price,
-  }));
+
+  const orders = ordersWithCustomer.map((order) => {
+    const customerOrders = order.customer.orders;
+    const customerOrdersForSeller = customerOrders.filter(o => o.sellerId === id);
+    const customerReturnOrders = customerOrders.filter(o => o.orderStatus === 'RETURN');
+    const customerReturnOrdersForSeller = customerReturnOrders.filter(o => o.sellerId === id);
+
+    return {
+      ...order,
+      customerName: `${order.customer.firstName} ${order.customer.lastName}`,
+      contactNumber: order.customer.contactNumber,
+      productCode: order.product.productCode,
+      unitPrice: order.product.price,
+      description: order.product.description,
+      totalOrdersForCustomer: customerOrders.length,
+      totalOrdersForCustomerForSeller: customerOrdersForSeller.length,
+      totalReturnOrdersForCustomer: customerReturnOrders.length,
+      totalReturnOrdersForCustomerForSeller: customerReturnOrdersForSeller.length,
+    };
+  });
 
   return orders;
+} catch (error) {
+  throw new Error(`Error creating order and customer: ${error}`);
+}
 }
 
 const updateStatus = async (id, status) => {
@@ -49,14 +68,12 @@ const updateStatus = async (id, status) => {
 };
 const createOrder = async (order) => {
   try {
-    // Check if the customer already exists based on the mobile number
     let customer = await prisma.customer.findUnique({
       where: {
         contactNumber: order["Your phone number : "],
       },
     });
 
-    // If customer doesn't exist, create a new customer
     if (!customer) {
       customer = await prisma.customer.create({
         data: {
