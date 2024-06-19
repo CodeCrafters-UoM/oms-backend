@@ -74,7 +74,7 @@ const createOrder = async (order) => {
         quantity: parseInt(order["Quantity you need : "]),
         deliveryAddress: order["Your delivery address : "],
         paymentMethod: order["Your preferred payment method : "],
-        orderStatus: "New",
+        orderStatus: "NEW",
         size: order["Size of the item : "],
         color: order["Color of the item : "],
         comments: order["Comments : "],
