@@ -10,10 +10,9 @@ const sellerRoutes = require("./src/routes/seller.routes");
 const orderformRoutes = require("./src/routes/orderform.routes");
 const forgotpasswordRoutes = require("./src/routes/forgotpassword.routes");
 const contactusRoutes = require("./src/routes/contactus.routes");
-const notificationRoutes = require("./src/routes/notification.routes")
+const notificationRoutes = require("./src/routes/notification.routes");
+const reportsRoutes = require("./src/routes/reports.routes");
 const { initWebSocketServer } = require("./src/services/notification.service");
-
-
 
 const app = express();
 const httpServer = require("http").createServer(app);
@@ -41,7 +40,6 @@ app.use(forgotpasswordRoutes);
 app.use(contactusRoutes);
 app.use(notificationRoutes);
 app.use(reportsRoutes);
-
 
 httpServer.listen(8000, () => {
   console.log("Server is running on port", 8000);
