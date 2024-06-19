@@ -1,5 +1,5 @@
 const orderService = require("../services/order.service");
-const { sendNotification } = require("../../notificationService");
+const { sendNotification } = require("../services/notification.service");
 
 async function getAllOrders(req, res) {
   const id = req.user.id;
@@ -19,13 +19,14 @@ const updateStatus = async (req, res) => {
 const createOrder = async (req, res) => {
   try {
     const order = req.body; 
-    const newOrder = orderService.createOrder(order);
+    const newOrder = await orderService.createOrder(order);
 
      // Send WebSocket notification
-     sendNotification("New order added");
+     await sendNotification(newOrder);
 
      res.status(200).json(newOrder);
   } catch (error) {
+    console.error("Error creating order:", error);
     res.status(500).json({ message: error.message });
   }
 };
