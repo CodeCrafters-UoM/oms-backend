@@ -70,7 +70,7 @@ model Order {
   quantity          Int?
   deliveryAddress   String
   paymentMethod     String?
-  orderStatus       String
+  orderStatus       Status
   size              String?
   color             String?
   comments          String?
@@ -164,4 +164,12 @@ enum QuestionType {
   TEXT
   RADIO
   CHECKBOX
+}
+
+enum Status {
+  NEW
+  ACCEPT
+  REJECT
+  DELIVER
+  RETURN
 }
