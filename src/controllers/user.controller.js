@@ -25,10 +25,9 @@ async function login(req, res) {
   try {
     const user = await userService.login(req.body);
     res.status(200).json(user);
-    console.log("user", user);
   } catch (err) {
+    console.log("controller", err.message);
     res.status(401).json({ error: err.message });
-    console.log(err);
   }
 }
 

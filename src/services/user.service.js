@@ -112,7 +112,8 @@ async function login(req) {
       throw new Error("Incorrect password");
     }
   } catch (error) {
-    throw new Error("Error logging in:", error);
+    console.log("service ", error.message);
+    throw new Error(error.message);
   }
 }
 
@@ -122,9 +123,9 @@ async function getProfileDetails(id) {
       where: {
         id: id,
       },
-        include: {
-          seller: true, 
-        },
+      include: {
+        seller: true,
+      },
     });
 
     if (!user) {
