@@ -11,17 +11,6 @@ const getNotifications = async (req, res) => {
   }
 };
 
-const createNotification = async (req, res) => {
-  const { userId, message, orderId } = req.body;
-  try {
-    const notification = await notificationService.createNotification({ userId, message, orderId });
-    res.status(201).json(notification);
-  } catch (error) {
-    console.error("Error creating notification:", error);
-    res.status(500).json({ message: "Failed to create notification" });
-  }
-};
-
 const markAllNotificationsAsRead = async (req, res) => {
   const userId = req.user.id;
   try {
@@ -35,6 +24,5 @@ const markAllNotificationsAsRead = async (req, res) => {
 
 module.exports = {
   getNotifications,
-  createNotification,
   markAllNotificationsAsRead,
 };

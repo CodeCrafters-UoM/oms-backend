@@ -29,7 +29,6 @@ async function sendNotification(order) {
   }
 
   try {
-    // Fetch product details
     const product = await prisma.product.findUnique({
       where: {
         id: order.productId,
@@ -48,8 +47,8 @@ async function sendNotification(order) {
         data: {
           message,
           read: false,
-          userId: order.sellerId, // Assuming order has a reference to the seller
-          orderId: order.orderId, // Assuming order has an orderId field
+          userId: order.sellerId, 
+          orderId: order.orderId, 
         },
       });
 
@@ -83,23 +82,6 @@ async function getNotifications(userId) {
     return [];
   }
 }
-
-async function createNotification(userId, message, orderId) {
-    try {
-      const notification = await prisma.notification.create({
-        data: {
-          message,
-          read: false,
-          userId,
-          orderId,
-        },
-      });
-      return notification;
-    } catch (error) {
-      console.error("Error creating notification:", error);
-      throw new Error("Error creating notification");
-    }
-  }
   
   async function markAllNotificationsAsRead(userId) {
     try {
@@ -123,6 +105,5 @@ async function createNotification(userId, message, orderId) {
     initWebSocketServer,
     sendNotification,
     getNotifications,
-    createNotification,
     markAllNotificationsAsRead,
   };
