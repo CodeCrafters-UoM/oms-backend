@@ -11,13 +11,6 @@ router.get(
   notificationController.getNotifications
 );
 
-// Route to create a new notification (if needed, otherwise notifications might be created internally)
-router.post(
-  "/notifications",
-  auth.protected.check([Role.SELLER, Role.ADMIN, Role.BUYER]),
-  notificationController.createNotification
-);
-
 // Optionally, a route to mark notifications as read
 router.put(
   "/notifications/read",
