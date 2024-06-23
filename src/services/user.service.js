@@ -3,87 +3,62 @@ const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-async function register(data) {
+async function register(data, res) {
   try {
-    const existingUser = await prisma.user.findUnique({
+    const existingUsername = await prisma.user.findUnique({
       where: {
         username: data.user.username,
       },
     });
-    if (existingUser) {
-      throw new Error("Username or email is already exists");
+    if (existingUsername) {
+      return res.status(400).json({ error: "Username already exists" });
     }
-    console.log("existing user", existingUser);
-    let newUser;
-    try {
-      newUser = await prisma.user.create({
+    const existingEmail = await prisma.user.findUnique({
+      where: {
+        email: data.user.email,
+      },
+    });
+    if (existingEmail) {
+      return res.status(400).json({ error: "Email already exists" });
+    }
+    const newUser = await prisma.user.create({
+      data: {
+        username: data.user.username,
+        password: data.user.password,
+        email: data.user.email,
+        role: data.user.role,
+        name: data.user.name,
+      },
+    });
+
+    let roleData;
+    if (newUser.role === Role.ADMIN) {
+      roleData = await prisma.admin.create({
         data: {
-          username: data.user.username,
-          password: data.user.password,
-          email: data.user.email,
-          role: data.user.role,
-          name: data.user.name,
+          user: {
+            connect: { id: newUser.id },
+          },
         },
       });
-    } catch (error) {
-      console.log("Error creating user:", error);
-      throw new Error("Error creating user");
-    }
-    console.log("New user created:", newUser);
-    if (!newUser) {
-      throw new Error("Error creating user");
-    }
-    if (newUser.role === Role.ADMIN) {
-      try {
-        const admin = await prisma.admin.create({
-          data: {
-            user: {
-              connect: {
-                id: newUser.id,
-              },
-            },
+    } else if (newUser.role === Role.SELLER) {
+      roleData = await prisma.seller.create({
+        data: {
+          user: {
+            connect: { id: newUser.id },
           },
-        });
-        return admin;
-      } catch (error) {
-        console.log("Error creating admin:", error);
-        await prisma.user.delete({
-          where: {
-            id: newUser.id,
-          },
-        });
-        throw new Error("Error creating admin");
-      }
+          businessName: data.seller.businessName,
+          contactNumber: data.seller.contactNumber,
+        },
+      });
     }
-    if (newUser.role === Role.SELLER) {
-      try {
-        const seller = await prisma.seller.create({
-          data: {
-            user: {
-              connect: {
-                id: newUser.id,
-              },
-            },
-            businessName: data.seller.businessName,
-            contactNumber: data.seller.contactNumber,
-          },
-        });
 
-        return seller;
-      } catch (error) {
-        console.log("Error creating seller:", error);
-        await prisma.user.delete({
-          where: {
-            id: newUser.id,
-          },
-        });
-        throw new Error("Error creating seller");
-      }
-    }
+    return res.status(201).json({ user: newUser, roleData });
   } catch (error) {
-    throw new Error("Error creating user:", error);
+    console.log("Error creating user:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 }
+
 async function login(req) {
   try {
     const user = await prisma.user.findUnique({
