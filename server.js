@@ -13,6 +13,7 @@ const contactusRoutes = require("./src/routes/contactus.routes");
 const notificationRoutes = require("./src/routes/notification.routes");
 const reportsRoutes = require("./src/routes/reports.routes");
 const { initWebSocketServer } = require("./src/services/notification.service");
+const helloworldRoutes = require("./src/routes/helloworld.routes");
 
 const app = express();
 const httpServer = require("http").createServer(app);
@@ -40,6 +41,7 @@ app.use(forgotpasswordRoutes);
 app.use(contactusRoutes);
 app.use(notificationRoutes);
 app.use(reportsRoutes);
+app.use(helloworldRoutes);
 
 httpServer.listen(8000, () => {
   console.log("Server is running on port", 8000);
