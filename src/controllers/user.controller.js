@@ -5,20 +5,7 @@ require("dotenv").config();
 async function register(req, res) {
   const hashedPwd = await bcrypt.hash(req.body.user.password, 10);
   req.body.user.password = hashedPwd;
-  try {
-    const user = await userService.register(req.body);
-    if (!user) {
-      throw new Error("Error creating seller");
-    }
-    res.status(200).json({ userId: user.userId });
-  } catch (error) {
-    console.log("error", error.message);
-    if (error.message === "Error creating user:") {
-      res.status(400).json({ error: "Username or email is already exists" });
-    } else {
-      res.status(500).json({ error: "Internal server error" });
-    }
-  }
+  const user = await userService.register(req.body, res);
 }
 async function login(req, res) {
   console.log(req.body);

@@ -18,14 +18,12 @@ const helloworldRoutes = require("./src/routes/helloworld.routes");
 const app = express();
 const httpServer = require("http").createServer(app);
 
-// Initialize WebSocket server
 initWebSocketServer(httpServer);
 
-// Middleware
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://deleever.one"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -33,15 +31,15 @@ app.use(
 app.use(cookieParser());
 
 app.use("/api/v1", userRoutes);
-app.use(productRoutes);
-app.use(orderlinkRoutes);
-app.use(orderRoutes);
-app.use(orderformRoutes);
-app.use(forgotpasswordRoutes);
-app.use(contactusRoutes);
-app.use(notificationRoutes);
-app.use(reportsRoutes);
-app.use(helloworldRoutes);
+app.use("/api/v1", productRoutes);
+app.use("/api/v1", orderlinkRoutes);
+app.use("/api/v1", orderRoutes);
+app.use("/api/v1", orderformRoutes);
+app.use("/api/v1", forgotpasswordRoutes);
+app.use("/api/v1", contactusRoutes);
+app.use("/api/v1", notificationRoutes);
+app.use("/api/v1", reportsRoutes);
+app.use("/api/v1", helloworldRoutes);
 
 httpServer.listen(8000, () => {
   console.log("Server is running on port", 8000);
