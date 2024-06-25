@@ -1,6 +1,8 @@
 const { PrismaClient, Prisma } = require("@prisma/client");
 const prisma = new PrismaClient();
 
+const MAX_DESCRIPTION_LENGTH = 255;
+
 async function getAllProducts(id) {
   return prisma.product.findMany({
     where: {
@@ -18,6 +20,10 @@ async function createProduct(data) {
       product: true,
     },
   });
+
+  if (data.description.length > MAX_DESCRIPTION_LENGTH) {
+    throw new Error(`Description should not exceed ${MAX_DESCRIPTION_LENGTH} characters.`);
+  }
 
   if (!availableOrderLink) {
     throw new Error("Invalid order link");
@@ -39,9 +45,11 @@ async function createProduct(data) {
     });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-      // Unique constraint error
       throw new Error("Product code already exists");
-    } else {
+    } else if (error.code === 'P2000' && error.meta.column_name === 'description') {
+      throw new Error(`Description should not exceed ${MAX_DESCRIPTION_LENGTH} characters.`);
+    }
+    else {
       throw error;
     }
   }
