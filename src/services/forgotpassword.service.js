@@ -1,24 +1,10 @@
 const { PrismaClient } = require("@prisma/client");
 const { request } = require("http");
 const crypto = require("crypto");
-const { Vonage } = require("@vonage/server-sdk");
 const bcrypt = require("bcrypt");
-
 const prisma = new PrismaClient();
-const vonage = new Vonage({
-  apiKey: "6ef41649",
-  apiSecret: "p9LpZpgdKzb798rC",
-});
+const { sendEmail } = require("./mail.service");
 
-function convertToInternationalFormat(localNumber) {
-  const countryCode = "94";
-  const sanitizedNumber = localNumber.replace(/\D/g, "");
-  const formattedNumber = sanitizedNumber.startsWith("0")
-    ? sanitizedNumber.substring(1)
-    : sanitizedNumber;
-  const internationalNumber = `${countryCode}${formattedNumber}`;
-  return internationalNumber;
-}
 async function sendOtp(username, res) {
   try {
     const user = await prisma.user.findUnique({
@@ -35,15 +21,7 @@ async function sendOtp(username, res) {
 
     const otp = crypto.randomBytes(3).toString("hex");
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
-    console.log("otp", otp);
 
-    // const passwordReset = await prisma.passwordReset.create({
-    //   data: {
-    //     userId: user.id,
-    //     otp,
-    //     expiresAt,
-    //   },
-    // });
     const passwordReset = await prisma.passwordReset.upsert({
       where: {
         userId: user.id,
@@ -51,6 +29,7 @@ async function sendOtp(username, res) {
       update: {
         otp,
         expiresAt,
+        used: false,
       },
       create: {
         userId: user.id,
@@ -62,27 +41,9 @@ async function sendOtp(username, res) {
       console.log("Failed to create OTP record");
       return res.status(500).json({ message: "Failed to generate OTP" });
     }
-    const phoneNumber = convertToInternationalFormat(user.seller.contactNumber);
-    console.log("Sending OTP to:", phoneNumber);
+    sendEmail(user.email, user.name, otp);
 
-    await vonage.sms
-      .send({
-        to: 94772726961,
-        from: "Vonage",
-        text: `Your OTP is ${otp}`,
-      })
-      .then((resp) => {
-        console.log("Message sent successfully");
-        console.log(resp);
-        return res
-          .status(200)
-          .json({ message: "OTP sent to your phone number" });
-      })
-      .catch((err) => {
-        console.log("There was an error sending the messages.");
-        console.error(err);
-        return res.status(500).json({ error: "Failed to send OTP" });
-      });
+    return res.status(200).json({ message: "OTP sent successfully" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error" });
@@ -91,7 +52,6 @@ async function sendOtp(username, res) {
 
 async function verifyOtp(username, otp, res) {
   console.log("username", username);
-  console.log("otp", otp);
   try {
     const user = await prisma.user.findUnique({
       where: { username },
