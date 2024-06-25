@@ -8,7 +8,7 @@ let io;
 function initWebSocketServer(httpServer) {
   io = new Server(httpServer, {
     cors: {
-      origin: "http://localhost:5173",
+      origin: ["http://localhost:5173", "https://deleever.one"],
       methods: ["GET", "POST"],
     },
   });
@@ -24,7 +24,7 @@ function initWebSocketServer(httpServer) {
 
 async function sendNotification(order) {
   if (!io) {
-    console.log('WebSocket server not initialized');
+    console.log("WebSocket server not initialized");
     return;
   }
 
@@ -36,30 +36,30 @@ async function sendNotification(order) {
     });
 
     if (!product) {
-      console.log('Product not found');
+      console.log("Product not found");
       return;
     }
     const time = new Date().toLocaleTimeString();
     const date = new Date().toLocaleDateString();
     const message = `New order received for ${product.name}\n${date} at ${time}`;
-    
-      const notification = await prisma.notification.create({
-        data: {
-          message,
-          read: false,
-          userId: order.sellerId, 
-          orderId: order.orderId, 
-        },
-      });
 
-      io.emit("notification", {
-        id: notification.id,
-        message: notification.message,
-        read: notification.read,
-        userId: notification.userId,
-        orderId: notification.orderId,
-        createdAt: notification.createdAt,
-      });
+    const notification = await prisma.notification.create({
+      data: {
+        message,
+        read: false,
+        userId: order.sellerId,
+        orderId: order.orderId,
+      },
+    });
+
+    io.emit("notification", {
+      id: notification.id,
+      message: notification.message,
+      read: notification.read,
+      userId: notification.userId,
+      orderId: notification.orderId,
+      createdAt: notification.createdAt,
+    });
   } catch (error) {
     console.error("Error sending notification:", error);
   }
@@ -73,7 +73,7 @@ async function getNotifications(userId) {
         // read: false,
       },
       orderBy: {
-        createdAt: 'desc', // Order by most recent notifications first
+        createdAt: "desc", // Order by most recent notifications first
       },
     });
     return notifications;
@@ -82,28 +82,28 @@ async function getNotifications(userId) {
     return [];
   }
 }
-  
-  async function markAllNotificationsAsRead(userId) {
-    try {
-      const notifications = await prisma.notification.updateMany({
-        where: {
-          userId,
-          read: false,
-        },
-        data: {
-          read: true,
-        },
-      });
-      return notifications;
-    } catch (error) {
-      console.error("Error marking notification as read:", error);
-      res.status(500).json({ error: "Failed to mark notifications as read" });
-    }
+
+async function markAllNotificationsAsRead(userId) {
+  try {
+    const notifications = await prisma.notification.updateMany({
+      where: {
+        userId,
+        read: false,
+      },
+      data: {
+        read: true,
+      },
+    });
+    return notifications;
+  } catch (error) {
+    console.error("Error marking notification as read:", error);
+    res.status(500).json({ error: "Failed to mark notifications as read" });
   }
-  
-  module.exports = {
-    initWebSocketServer,
-    sendNotification,
-    getNotifications,
-    markAllNotificationsAsRead,
-  };
+}
+
+module.exports = {
+  initWebSocketServer,
+  sendNotification,
+  getNotifications,
+  markAllNotificationsAsRead,
+};
