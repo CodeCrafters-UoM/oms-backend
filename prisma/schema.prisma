@@ -50,7 +50,7 @@ model Product {
   id                 String           @id @default(uuid())
   productCode        String           @unique
   name               String
-  description        String
+  description        String          
   price              Float
   seller             Seller           @relation(fields: [sellerId], references: [userId])
   sellerId           String

@@ -8,8 +8,22 @@ async function getAllProducts(req, res) {
 }
 
 async function createProduct(req, res) {
-  const product = await productService.createProduct(req.body);
-  res.json(product).status(200);
+  try {
+    const product = await productService.createProduct(req.body);
+    console.log(product);
+
+    res.status(201).json(product);
+  } catch (error) {
+    if (error.message === "Product code already exists") {
+      res.status(400).json({ message: error.message });
+    } else if (error.message === "Invalid order link" || error.message === "Order link is already associated with another product") {
+      res.status(400).json({ message: error.message });
+    }
+    else {
+      console.error("Internal server error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
 }
 
 async function deleteProduct(req, res) {
