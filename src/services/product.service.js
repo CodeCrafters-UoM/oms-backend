@@ -1,4 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
+const { PrismaClient, Prisma } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function getAllProducts(id) {
@@ -26,17 +26,27 @@ async function createProduct(data) {
   if (availableOrderLink.product) {
     throw new Error("Order link is already associated with another product");
   }
-  return prisma.product.create({
-    data: {
-      productCode: data.productCode,
-      name: data.name,
-      description: data.description,
-      price: data.price,
-      sellerId: data.sellerId,
-      productOrderLinkId: data.orderLink,
-    },
-  });
+  try {
+    return await prisma.product.create({
+      data: {
+        productCode: data.productCode,
+        name: data.name,
+        description: data.description,
+        price: data.price,
+        sellerId: data.sellerId,
+        productOrderLinkId: data.orderLink,
+      },
+    });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+      // Unique constraint error
+      throw new Error("Product code already exists");
+    } else {
+      throw error;
+    }
+  }
 }
+
 
 async function deleteProduct(productCode) {
   const product = await prisma.product.findUnique({
