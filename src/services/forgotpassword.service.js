@@ -64,10 +64,10 @@ async function verifyOtp(username, otp, res) {
     const passwordReset = await prisma.passwordReset.findUnique({
       where: {
         userId: user.id,
-        otp: user.otp,
+        otp: otp,
         used: false,
         expiresAt: {
-          gt: new Date(), // Check if the OTP is not expired
+          gt: new Date(),
         },
       },
     });
