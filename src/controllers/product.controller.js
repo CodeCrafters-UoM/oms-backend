@@ -3,8 +3,19 @@ const orderLinkService = require("../services/orderlink.service");
 
 async function getAllProducts(req, res) {
   const id = req.user.id;
-  const products = await productService.getAllProducts(id);
-  res.json(products);
+
+  try{
+    const products = await productService.getAllProducts(id);
+
+    if (!products) {
+      return res.status(404).json({ message: 'Products not found' });
+    }
+
+    res.json(products);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 }
 
 async function createProduct(req, res) {

@@ -6,6 +6,9 @@ async function getAllProducts(id) {
     where: {
       sellerId: id,
     },
+    include: {
+      order: true, // Include orders related to the product
+    },
   });
 }
 
