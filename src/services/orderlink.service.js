@@ -41,7 +41,16 @@ async function searchOrderlink(key) {
         contains: key,
       },
     },
+    include: {
+      product: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
   });
+  console.log("orderLinks", orderLinks);
   return orderLinks;
 }
 async function updateOrderlink(id) {
