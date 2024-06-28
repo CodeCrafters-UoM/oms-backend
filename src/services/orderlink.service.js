@@ -34,12 +34,13 @@ async function deleteOrderlink(id) {
     },
   });
 }
-async function searchOrderlink(key) {
+async function searchOrderlink(key, id) {
   const orderLinks = await prisma.productOrderLink.findMany({
     where: {
       name: {
         contains: key,
       },
+      sellerId: id,
     },
     include: {
       product: {
@@ -50,7 +51,6 @@ async function searchOrderlink(key) {
       },
     },
   });
-  console.log("orderLinks", orderLinks);
   return orderLinks;
 }
 async function updateOrderlink(id) {
