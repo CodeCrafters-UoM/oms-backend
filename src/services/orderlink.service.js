@@ -87,6 +87,7 @@ async function getAvailableOrderlinks(id) {
           select: {
             id: true,
             name: true,
+            productCode: true,
           },
         },
       },

@@ -82,15 +82,22 @@ async function updateProduct(productCode, newData) {
   if (!product) {
     return { success: false, error: "Product not found" };
   }
+
   try {
     await prisma.product.update({
       where: {
         id: product.id,
       },
-      data: newData,
+      data: {
+        name: newData.name,
+        description: newData.description,
+        price: newData.price,
+      },
     });
+
     return { success: true };
   } catch (error) {
+    console.error('Error updating product:', error);
     return { success: false, error: error.message };
   }
 }
