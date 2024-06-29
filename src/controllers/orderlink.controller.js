@@ -27,8 +27,9 @@ async function deleteOrderlink(req, res) {
 }
 async function searchOrderlink(req, res) {
   try {
+    const id = req.user.id;
     const key = req.query.key;
-    const orderLinks = await orderlinkService.searchOrderlink(key);
+    const orderLinks = await orderlinkService.searchOrderlink(key, id);
     res.status(200).json(orderLinks);
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
