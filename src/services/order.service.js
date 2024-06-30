@@ -16,8 +16,7 @@ async function getAllOrders(id) {
             firstName: true,
             lastName: true,
             contactNumber: true,
-            orders: true, 
-            email: true,
+            orders: true,
           },
         },
         product: {
@@ -30,7 +29,6 @@ async function getAllOrders(id) {
         },
       },
     });
-
     const orders = ordersWithCustomer.map((order) => {
       const customerOrders = order.customer.orders;
       const customerOrdersForSeller = customerOrders.filter(o => o.sellerId === id);
@@ -105,9 +103,6 @@ const createOrder = async (order) => {
         deliveryAddress: order["Your delivery address : "],
         paymentMethod: order["Your preferred payment method : "],
         orderStatus: "NEW",
-        size: order["Size of the item : "],
-        color: order["Color of the item : "],
-        comments: order["Comments : "],
         sellerId: order.seller,
         customerId: order["Your phone number : "],
         customisedAnswers: JSON.stringify(order.customisedAnswers),
