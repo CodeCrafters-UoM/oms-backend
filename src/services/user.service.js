@@ -70,10 +70,6 @@ async function login(req) {
     if (!user) {
       throw new Error("User not found");
     }
-    const isActive = user.active;
-    if (!isActive) {
-      throw new Error("User is not active");
-    }
     const passwordMatch = await bcrypt.compare(req.password, user.password);
 
     if (passwordMatch) {
