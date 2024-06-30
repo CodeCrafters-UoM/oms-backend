@@ -29,37 +29,41 @@ async function getAllOrders(id) {
         },
       },
     });
-
     const orders = ordersWithCustomer.map((order) => {
       const customerOrders = order.customer.orders;
-      const customerOrdersForSeller = customerOrders.filter(
-        (o) => o.sellerId === id
-      );
-      const customerReturnOrders = customerOrders.filter(
-        (o) => o.orderStatus === "RETURN"
-      );
-      const customerReturnOrdersForSeller = customerReturnOrders.filter(
-        (o) => o.sellerId === id
-      );
+      const customerOrdersForSeller = customerOrders.filter(o => o.sellerId === id);
+      const customerReturnOrders = customerOrders.filter(o => o.orderStatus === 'RETURN');
+      const customerReturnOrdersForSeller = customerReturnOrders.filter(o => o.sellerId === id);
+      let decodedCustomisedAnswers = {};
+      if (typeof order.customisedAnswers === 'string') {
+        try {
+          decodedCustomisedAnswers = JSON.parse(order.customisedAnswers);
+        } catch (error) {
+          console.error(`Error parsing customisedAnswers for order ${order.orderId}:`, error);
+        }
+      } else if (typeof order.customisedAnswers === 'object' && order.customisedAnswers !== null) {
+        decodedCustomisedAnswers = order.customisedAnswers;
+      }
 
       return {
         ...order,
         customerName: `${order.customer.firstName} ${order.customer.lastName}`,
         contactNumber: order.customer.contactNumber,
         productCode: order.product.productCode,
+        productName: order.product.name,
         unitPrice: order.product.price,
         description: order.product.description,
         totalOrdersForCustomer: customerOrders.length,
         totalOrdersForCustomerForSeller: customerOrdersForSeller.length,
         totalReturnOrdersForCustomer: customerReturnOrders.length,
-        totalReturnOrdersForCustomerForSeller:
-          customerReturnOrdersForSeller.length,
+        totalReturnOrdersForCustomerForSeller: customerReturnOrdersForSeller.length,
+        customisedAnswers: decodedCustomisedAnswers,
       };
     });
-
+    console.log(orders);
     return orders;
   } catch (error) {
-    throw new Error(`Error creating order and customer: ${error}`);
+    throw new Error(`Error fetching orders: ${error}`);
   }
 }
 
@@ -91,7 +95,7 @@ const createOrder = async (order) => {
         },
       });
     }
-    console.log(customer);
+
     const newOrder = await prisma.order.create({
       data: {
         productId: order.product,
@@ -101,10 +105,9 @@ const createOrder = async (order) => {
         orderStatus: "NEW",
         sellerId: order.seller,
         customerId: order["Your phone number : "],
-        customisedAnswers: order.customisedAnswers,
+        customisedAnswers: JSON.stringify(order.customisedAnswers),
       },
     });
-    console.log(newOrder);
     return newOrder;
   } catch (error) {
     throw new Error(`Error creating order and customer: ${error}`);
