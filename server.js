@@ -23,7 +23,7 @@ initWebSocketServer(httpServer);
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://deleever.one"],
+    origin: ["http://localhost:5173","http://localhost:4173", "https://deleever.one"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
