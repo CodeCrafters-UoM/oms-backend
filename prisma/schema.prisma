@@ -17,7 +17,6 @@ model User {
   image          String?
   role           Role            @default(SELLER)
   password       String
-  active         Boolean         @default(true)
   admin          Admin?
   seller         Seller?
   passwordResets PasswordReset[]
@@ -43,7 +42,6 @@ model Seller {
   products          Product[]
   orders            Order[]
   productOrderLinks ProductOrderLink[]
-  contactUs         ContactUs[]
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
 }
@@ -123,12 +121,8 @@ model ContactUs {
   businessName  String
   contactNumber String
   message       String
-  seller        Seller   @relation(fields: [sellerId], references: [userId])
-  sellerId      String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-
-  @@index([sellerId])
 }
 
 model PasswordReset {
