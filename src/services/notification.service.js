@@ -8,8 +8,13 @@ let io;
 function initWebSocketServer(httpServer) {
   io = new Server(httpServer, {
     cors: {
-      origin: ["http://localhost:5173", "https://deleever.one"],
+      origin: [
+        "http://localhost:5173",
+        "https://deleever.one",
+        "http://localhost:4173",
+      ],
       methods: ["GET", "POST"],
+      credentials: true,
     },
   });
 
