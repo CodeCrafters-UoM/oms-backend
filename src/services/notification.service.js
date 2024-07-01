@@ -12,6 +12,7 @@ function initWebSocketServer(httpServer) {
         "http://localhost:5173",
         "https://deleever.one",
         "http://localhost:4173",
+        "https://www.deleever.one",
       ],
       methods: ["GET", "POST"],
       credentials: true,
