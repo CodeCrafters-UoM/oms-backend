@@ -14,11 +14,12 @@ const notificationRoutes = require("./src/routes/notification.routes");
 const reportsRoutes = require("./src/routes/reports.routes");
 const { initWebSocketServer } = require("./src/services/notification.service");
 const helloworldRoutes = require("./src/routes/helloworld.routes");
+const http = require("http");
 
 const app = express();
-const httpServer = require("http").createServer(app);
+const httpServer = http.createServer(app);
 
-initWebSocketServer(httpServer);
+
 
 
 app.use(
@@ -35,6 +36,8 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
+
+initWebSocketServer(httpServer);
 
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", productRoutes);
