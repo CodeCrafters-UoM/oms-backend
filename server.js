@@ -20,7 +20,7 @@ const httpServer = require("http").createServer(app);
 
 initWebSocketServer(httpServer);
 
-app.use(express.json());
+
 app.use(
   cors({
     origin: [
@@ -33,6 +33,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/v1", userRoutes);
